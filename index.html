@@ -7,6 +7,8 @@
     <title>متجر الخدمات الإحترافي</title>
     <!-- استدعاء خط Tajawal من Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- مكتبة Supabase (قاعدة البيانات الحقيقية) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-gradient: #000000;
@@ -589,21 +591,13 @@
 </div>
 
 <script>
-    /* ====== نظام تسجيل دخول محلي (إيميل + كلمة مرور) - يشتغل جوه أي APK بدون قيود جوجل ====== */
-    const USERS_KEY = "tabaadul_users_db";
-    const SESSION_KEY = "tabaadul_session_email";
+    /* ====== ربط حقيقي بقاعدة بيانات Supabase (يحفظ التقدم للأبد حتى لو حذفت التطبيق) ====== */
+    const SUPABASE_URL = "https://zopepxlwqhkldesfnalp.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_VprQagPam4r1KPA9aW_HTA_8FtamovX";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let currentUser = null; // { email }
+    let currentUser = null; // { id, email }
     let authMode = "login"; // login | register
-
-    function loadUsersDB() {
-        try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
-        catch (e) { return {}; }
-    }
-
-    function saveUsersDB(db) {
-        localStorage.setItem(USERS_KEY, JSON.stringify(db));
-    }
 
     function switchAuthTab(mode) {
         authMode = mode;
@@ -614,64 +608,98 @@
         document.getElementById('loginStatus').classList.remove('error');
     }
 
-    function handleAuthSubmit() {
+    function setAuthBusy(busy, label) {
+        const btn = document.getElementById('authSubmitBtn');
+        btn.disabled = busy;
+        if (busy) btn.textContent = label || "جاري التحميل...";
+        else btn.textContent = authMode === 'login' ? 'تسجيل الدخول' : 'إنشاء الحساب';
+    }
+
+    async function handleAuthSubmit() {
         const status = document.getElementById('loginStatus');
         const email = document.getElementById('authEmail').value.trim().toLowerCase();
         const password = document.getElementById('authPassword').value;
         status.classList.remove('error');
+        status.textContent = '';
 
         if (!email || !password) {
             status.textContent = "عبّي البريد الإلكتروني وكلمة المرور.";
             status.classList.add('error');
             return;
         }
-        if (password.length < 4) {
-            status.textContent = "كلمة المرور لازم تكون 4 أحرف على الأقل.";
+        if (password.length < 6) {
+            status.textContent = "كلمة المرور لازم تكون 6 أحرف على الأقل.";
             status.classList.add('error');
             return;
         }
 
-        const db = loadUsersDB();
-
         if (authMode === 'register') {
-            if (db[email]) {
-                status.textContent = "فيه حساب مسجل بهذا الإيميل من قبل، جرب تسجل دخول.";
+            setAuthBusy(true, "جاري إنشاء الحساب...");
+            const { data, error } = await db.auth.signUp({ email, password });
+            setAuthBusy(false);
+            if (error) {
+                status.textContent = translateAuthError(error.message);
                 status.classList.add('error');
                 return;
             }
-            db[email] = { password, points: 100, hasTakenGift: false, isVip: false };
-            saveUsersDB(db);
-            localStorage.setItem(SESSION_KEY, email);
-            loginAs(email, db[email]);
+            if (data.session) {
+                // ما فيه تأكيد إيميل مطلوب، دخل فوراً
+                await afterAuthSuccess(data.user);
+            } else {
+                status.textContent = "تم إنشاء الحساب! افتح إيميلك واضغط رابط التأكيد، بعدين رجع سجل دخول.";
+                switchAuthTab('login');
+            }
         } else {
-            const user = db[email];
-            if (!user || user.password !== password) {
-                status.textContent = "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+            setAuthBusy(true, "جاري تسجيل الدخول...");
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
+            setAuthBusy(false);
+            if (error) {
+                status.textContent = translateAuthError(error.message);
                 status.classList.add('error');
                 return;
             }
-            localStorage.setItem(SESSION_KEY, email);
-            loginAs(email, user);
+            await afterAuthSuccess(data.user);
         }
     }
 
-    function loginAs(email, userData) {
-        currentUser = { email };
-        points = userData.points;
-        hasTakenGift = userData.hasTakenGift;
-        isVip = userData.isVip;
+    function translateAuthError(msg) {
+        if (msg.includes("Invalid login credentials")) return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+        if (msg.includes("User already registered")) return "فيه حساب مسجل بهذا الإيميل من قبل، جرب تسجل دخول.";
+        if (msg.includes("Email not confirmed")) return "لازم تأكد إيميلك أول (شيك على بريدك الوارد).";
+        return "حصل خطأ: " + msg;
+    }
+
+    async function afterAuthSuccess(user) {
+        currentUser = { id: user.id, email: user.email };
+
+        // نجيب بيانات النقاط، ولو أول مرة ننشئها
+        let { data: profile, error } = await db
+            .from('user_progress')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        if (!profile) {
+            const { data: created } = await db
+                .from('user_progress')
+                .insert({ id: user.id, email: user.email, points: 100, has_taken_gift: false, is_vip: false })
+                .select()
+                .single();
+            profile = created;
+        }
+
+        points = profile.points;
+        hasTakenGift = profile.has_taken_gift;
+        isVip = profile.is_vip;
         showApp();
     }
 
-    function persistCurrentUserData() {
+    async function persistCurrentUserData() {
         if (!currentUser) return;
-        const db = loadUsersDB();
-        if (db[currentUser.email]) {
-            db[currentUser.email].points = points;
-            db[currentUser.email].hasTakenGift = hasTakenGift;
-            db[currentUser.email].isVip = isVip;
-            saveUsersDB(db);
-        }
+        await db
+            .from('user_progress')
+            .update({ points, has_taken_gift: hasTakenGift, is_vip: isVip, updated_at: new Date().toISOString() })
+            .eq('id', currentUser.id);
     }
 
     function continueAsGuest() {
@@ -682,9 +710,9 @@
         showApp();
     }
 
-    function signOutUser() {
+    async function signOutUser() {
+        if (currentUser) await db.auth.signOut();
         currentUser = null;
-        localStorage.removeItem(SESSION_KEY);
         document.getElementById('appCard').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('loginStatus').textContent = "";
@@ -709,16 +737,10 @@
         updateUI();
     }
 
-    function checkAuthOnLoad() {
-        const savedEmail = localStorage.getItem(SESSION_KEY);
-        if (savedEmail) {
-            const db = loadUsersDB();
-            if (db[savedEmail]) {
-                loginAs(savedEmail, db[savedEmail]);
-                return;
-            } else {
-                localStorage.removeItem(SESSION_KEY);
-            }
+    async function checkAuthOnLoad() {
+        const { data: { session } } = await db.auth.getSession();
+        if (session && session.user) {
+            await afterAuthSuccess(session.user);
         }
         // غير كذا: تبقى شاشة الدخول ظاهرة (الوضع الافتراضي بالصفحة)
     }
