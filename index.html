@@ -347,39 +347,6 @@
             line-height: 1.8;
         }
 
-        .google-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: #ffffff;
-            color: #1f2937;
-            border: none;
-            border-radius: 14px;
-            padding: 14px 18px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-            transition: transform 0.15s ease, box-shadow 0.2s ease;
-        }
-
-        .google-btn:hover {
-            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
-        }
-
-        .google-btn:active {
-            transform: scale(0.97);
-        }
-
-        .google-btn svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-
         .login-divider {
             display: flex;
             align-items: center;
@@ -408,6 +375,72 @@
             color: #ef4444;
         }
 
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 5px;
+            margin-bottom: 18px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-accent);
+            color: #ffffff;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 13px 14px;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-align: right;
+            outline: none;
+        }
+
+        .auth-input:focus {
+            border-color: #818cf8;
+        }
+
+        .auth-submit-btn {
+            width: 100%;
+            background: var(--primary-accent);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+            margin-top: 4px;
+        }
+
+        .auth-submit-btn:active {
+            transform: scale(0.97);
+        }
+
         .user-chip {
             display: flex;
             align-items: center;
@@ -419,10 +452,18 @@
             margin-bottom: 16px;
         }
 
-        .user-chip img {
+        .avatar-initial {
             width: 36px;
             height: 36px;
             border-radius: 50%;
+            background: var(--primary-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+            color: #ffffff;
+            flex-shrink: 0;
         }
 
         .user-chip .info {
@@ -430,14 +471,10 @@
             flex: 1;
         }
 
-        .user-chip .name {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
         .user-chip .email {
-            font-size: 11px;
-            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .logout-link {
@@ -470,22 +507,16 @@
 <div id="loginScreen">
     <div class="login-logo">⚡</div>
     <h2>متجر الخدمات الذكي</h2>
-    <p class="sub">سجّل الدخول بحسابك في Google عشان تحفظ نقاطك وتتابع طلباتك من أي جهاز</p>
+    <p class="sub">سجّل دخول أو أنشئ حساب جديد عشان تحفظ نقاطك على هذا الجهاز</p>
 
-    <button class="google-btn" id="googleSignInBtn" onclick="handleGoogleSignIn()">
-        <svg viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12
-                c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24
-                c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039
-                l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36
-                c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571
-                c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-        </svg>
-        <span id="googleBtnLabel">تسجيل الدخول عبر Google</span>
-    </button>
+    <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLoginBtn" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+        <button class="auth-tab" id="tabRegisterBtn" onclick="switchAuthTab('register')">حساب جديد</button>
+    </div>
+
+    <input type="email" class="auth-input" id="authEmail" placeholder="البريد الإلكتروني" autocomplete="email">
+    <input type="password" class="auth-input" id="authPassword" placeholder="كلمة المرور" autocomplete="current-password">
+    <button class="auth-submit-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">تسجيل الدخول</button>
 
     <div class="login-divider">أو</div>
     <button class="btn btn-outline" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--text-muted); padding:12px; border-radius:14px; font-size:13px; font-weight:600; cursor:pointer;" onclick="continueAsGuest()">
@@ -503,9 +534,8 @@
 
     <!-- بطاقة المستخدم المسجل دخوله -->
     <div class="user-chip hidden" id="userChip">
-        <img id="userAvatar" src="" alt="">
+        <div class="avatar-initial" id="userAvatarInitial">?</div>
         <div class="info">
-            <div class="name" id="userName"></div>
             <div class="email" id="userEmail"></div>
         </div>
         <span class="logout-link" onclick="signOutUser()">خروج</span>
@@ -558,85 +588,108 @@
     </div>
 </div>
 
-<!-- مكتبة Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <script>
-    /* ====== إعدادات تسجيل الدخول بجوجل ======
-       1) روح لـ https://console.cloud.google.com
-       2) أنشئ مشروع -> فعّل "OAuth consent screen" -> أنشئ "OAuth Client ID" من نوع Web application
-       3) ضيف رابط موقعك (مثلاً https://username.github.io) ضمن Authorized JavaScript origins
-       4) حط الـ Client ID مكان النص أدناه
-    */
-    const GOOGLE_CLIENT_ID = "818999508050-2ibidgsj8qcc4icfu3ckgsekmacc9k0m.apps.googleusercontent.com";
+    /* ====== نظام تسجيل دخول محلي (إيميل + كلمة مرور) - يشتغل جوه أي APK بدون قيود جوجل ====== */
+    const USERS_KEY = "tabaadul_users_db";
+    const SESSION_KEY = "tabaadul_session_email";
 
-    let googleTokenClient = null;
-    let currentUser = null; // { name, email, picture }
+    let currentUser = null; // { email }
+    let authMode = "login"; // login | register
 
-    function initGoogleAuth() {
-        if (typeof google === "undefined" || !google.accounts) {
-            // المكتبة لسا ما حملت، نحاول بعد شوي
-            setTimeout(initGoogleAuth, 300);
-            return;
-        }
-        googleTokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: GOOGLE_CLIENT_ID,
-            scope: "openid email profile",
-            callback: onGoogleTokenReceived
-        });
+    function loadUsersDB() {
+        try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
+        catch (e) { return {}; }
     }
 
-    function handleGoogleSignIn() {
+    function saveUsersDB(db) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(db));
+    }
+
+    function switchAuthTab(mode) {
+        authMode = mode;
+        document.getElementById('tabLoginBtn').classList.toggle('active', mode === 'login');
+        document.getElementById('tabRegisterBtn').classList.toggle('active', mode === 'register');
+        document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'تسجيل الدخول' : 'إنشاء الحساب';
+        document.getElementById('loginStatus').textContent = '';
+        document.getElementById('loginStatus').classList.remove('error');
+    }
+
+    function handleAuthSubmit() {
         const status = document.getElementById('loginStatus');
-        if (GOOGLE_CLIENT_ID.includes("ضع_CLIENT_ID")) {
-            status.textContent = "لازم أول تحط Google Client ID الخاص فيك بالكود عشان تسجيل الدخول يشتغل.";
-            status.classList.add('error');
-            return;
-        }
-        if (!googleTokenClient) {
-            status.textContent = "جاري تجهيز خدمة تسجيل الدخول، حاول بعد ثانية...";
-            return;
-        }
-        status.textContent = "";
+        const email = document.getElementById('authEmail').value.trim().toLowerCase();
+        const password = document.getElementById('authPassword').value;
         status.classList.remove('error');
-        // يفتح نافذة اختيار الحساب من جوجل تلقائياً إذا فيه أكثر من حساب مسجل بالمتصفح
-        googleTokenClient.requestAccessToken({ prompt: "select_account" });
-    }
 
-    async function onGoogleTokenReceived(tokenResponse) {
-        const status = document.getElementById('loginStatus');
-        if (!tokenResponse || tokenResponse.error) {
-            status.textContent = "حصل خطأ أثناء تسجيل الدخول، حاول مرة ثانية.";
+        if (!email || !password) {
+            status.textContent = "عبّي البريد الإلكتروني وكلمة المرور.";
             status.classList.add('error');
             return;
         }
-        try {
-            const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-                headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
-            });
-            const profile = await res.json();
-            currentUser = {
-                name: profile.name || "مستخدم",
-                email: profile.email || "",
-                picture: profile.picture || ""
-            };
-            showApp();
-        } catch (e) {
-            status.textContent = "تعذر جلب بيانات الحساب. تحقق من الاتصال وحاول ثانية.";
+        if (password.length < 4) {
+            status.textContent = "كلمة المرور لازم تكون 4 أحرف على الأقل.";
             status.classList.add('error');
+            return;
+        }
+
+        const db = loadUsersDB();
+
+        if (authMode === 'register') {
+            if (db[email]) {
+                status.textContent = "فيه حساب مسجل بهذا الإيميل من قبل، جرب تسجل دخول.";
+                status.classList.add('error');
+                return;
+            }
+            db[email] = { password, points: 100, hasTakenGift: false, isVip: false };
+            saveUsersDB(db);
+            localStorage.setItem(SESSION_KEY, email);
+            loginAs(email, db[email]);
+        } else {
+            const user = db[email];
+            if (!user || user.password !== password) {
+                status.textContent = "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+                status.classList.add('error');
+                return;
+            }
+            localStorage.setItem(SESSION_KEY, email);
+            loginAs(email, user);
+        }
+    }
+
+    function loginAs(email, userData) {
+        currentUser = { email };
+        points = userData.points;
+        hasTakenGift = userData.hasTakenGift;
+        isVip = userData.isVip;
+        showApp();
+    }
+
+    function persistCurrentUserData() {
+        if (!currentUser) return;
+        const db = loadUsersDB();
+        if (db[currentUser.email]) {
+            db[currentUser.email].points = points;
+            db[currentUser.email].hasTakenGift = hasTakenGift;
+            db[currentUser.email].isVip = isVip;
+            saveUsersDB(db);
         }
     }
 
     function continueAsGuest() {
         currentUser = null;
+        points = 100;
+        hasTakenGift = false;
+        isVip = false;
         showApp();
     }
 
     function signOutUser() {
         currentUser = null;
+        localStorage.removeItem(SESSION_KEY);
         document.getElementById('appCard').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('loginStatus').textContent = "";
+        document.getElementById('authEmail').value = "";
+        document.getElementById('authPassword').value = "";
         points = 100;
         hasTakenGift = false;
         isVip = false;
@@ -648,8 +701,7 @@
         const chip = document.getElementById('userChip');
         if (currentUser) {
             chip.classList.remove('hidden');
-            document.getElementById('userAvatar').src = currentUser.picture;
-            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userAvatarInitial').textContent = currentUser.email.charAt(0).toUpperCase();
             document.getElementById('userEmail').textContent = currentUser.email;
         } else {
             chip.classList.add('hidden');
@@ -657,7 +709,21 @@
         updateUI();
     }
 
-    initGoogleAuth();
+    function checkAuthOnLoad() {
+        const savedEmail = localStorage.getItem(SESSION_KEY);
+        if (savedEmail) {
+            const db = loadUsersDB();
+            if (db[savedEmail]) {
+                loginAs(savedEmail, db[savedEmail]);
+                return;
+            } else {
+                localStorage.removeItem(SESSION_KEY);
+            }
+        }
+        // غير كذا: تبقى شاشة الدخول ظاهرة (الوضع الافتراضي بالصفحة)
+    }
+
+    checkAuthOnLoad();
 
     let points = 100;
     let hasTakenGift = false;
@@ -700,6 +766,7 @@
         points += 20;
         hasTakenGift = true;
         updateUI();
+        persistCurrentUserData();
         showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");
     }
 
@@ -710,6 +777,7 @@
         }
         points -= 50;
         updateUI();
+        persistCurrentUserData();
         showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");
     }
 
@@ -723,6 +791,7 @@
         if (input === "FREE50") {
             points += 50;
             updateUI();
+            persistCurrentUserData();
             showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
             document.getElementById('giftCodeInput').value = '';
         } else if (input === "") {
