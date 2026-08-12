@@ -478,9 +478,50 @@
         .hidden {
             display: none !important;
         }
+
+        /* ============ شاشة عدم توفر الإنترنت (تغطي كل التطبيق) ============ */
+        #offlineOverlay {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+        }
+
+        #offlineOverlay .offline-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        #offlineOverlay h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        #offlineOverlay p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 280px;
+        }
     </style>
 </head>
 <body>
+
+<!-- ============ شاشة عدم توفر الإنترنت ============ -->
+<div id="offlineOverlay" class="hidden">
+    <div class="offline-icon">📡</div>
+    <h3>لا يوجد اتصال بالإنترنت</h3>
+    <p>هذا التطبيق يحتاج اتصال بالإنترنت للعمل. تأكد من اتصالك وحاول مرة ثانية.</p>
+</div>
+
 
 <!-- ============ شاشة تسجيل الدخول ============ -->
 <div id="loginScreen">
@@ -588,6 +629,28 @@
     const SUPABASE_KEY = "sb_publishable_VprQagPam4r1KPA9aW_HTA_8FtamovX";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    /* ====== التحقق من وجود إنترنت - التطبيق ما يشتغل خالص بدونه ====== */
+    function updateOnlineStatus() {
+        const overlay = document.getElementById('offlineOverlay');
+        if (!navigator.onLine) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    function requireInternet() {
+        if (!navigator.onLine) {
+            updateOnlineStatus();
+            return false;
+        }
+        return true;
+    }
+
     let currentUser = null; // { id, email }
     let authMode = "login"; // login | register
 
@@ -608,6 +671,7 @@
     }
 
     async function handleAuthSubmit() {
+        if (!requireInternet()) return;
         const status = document.getElementById('loginStatus');
         const email = document.getElementById('authEmail').value.trim().toLowerCase();
         const password = document.getElementById('authPassword').value;
@@ -695,6 +759,7 @@
     }
 
     function continueAsGuest() {
+        if (!requireInternet()) return;
         currentUser = null;
         points = 100;
         hasTakenGift = false;
@@ -703,6 +768,7 @@
     }
 
     async function signOutUser() {
+        if (!requireInternet()) return;
         if (currentUser) await db.auth.signOut();
         currentUser = null;
         document.getElementById('appCard').classList.add('hidden');
@@ -775,6 +841,7 @@
     }
 
     function getDailyGift() {
+        if (!requireInternet()) return;
         if (hasTakenGift) {
             showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
             return;
@@ -787,6 +854,7 @@
     }
 
     function buyViews() {
+        if (!requireInternet()) return;
         if (points < 50) {
             showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
             return;
@@ -798,11 +866,13 @@
     }
 
     function toggleCodeBox() {
+        if (!requireInternet()) return;
         const box = document.getElementById('codeSection');
         box.style.display = box.style.display === 'none' ? 'block' : 'none';
     }
 
     function redeemCode() {
+        if (!requireInternet()) return;
         const input = document.getElementById('giftCodeInput').value.trim();
         if (input === "FREE50") {
             points += 50;
@@ -818,6 +888,7 @@
     }
 
     function checkVip() {
+        if (!requireInternet()) return;
         if (isVip) {
             showMessage("عضويتك الحالية: VIP نشطة ومُفعلة 👑", "success");
         } else {
