@@ -1,1 +1,745 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head>    <meta charset="UTF-8">    <!-- منع التكبير والتصغير وتثبيت حجم الشاشة -->    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>متجر الخدمات الإحترافي</title>    <!-- استدعاء خط Tajawal من Google Fonts -->    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">    <style>        :root {            --bg-gradient: #000000;            --card-bg: rgba(30, 41, 59, 0.85);            --card-border: rgba(255, 255, 255, 0.12);            --primary-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);            --green-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);            --gold-accent: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);            --blue-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);            --text-main: #f8fafc;            --text-muted: #94a3b8;        }        * {            box-sizing: border-box;            font-family: 'Tajawal', sans-serif;            margin: 0;            padding: 0;            user-select: none;            -webkit-user-select: none;            -webkit-touch-callout: none;            touch-action: manipulation;        }        html, body {            width: 100%;            height: 100%;            overflow: hidden;            position: fixed;            background: #000000 !important;            color: var(--text-main);            display: flex;            justify-content: center;            align-items: center;            padding: 15px;            -webkit-text-size-adjust: 100%;        }        /* زر قناتك (تيليجرام) */        .telegram-btn {            position: fixed;            bottom: 65px;            left: 20px;            width: 62px;            height: 62px;            background: linear-gradient(135deg, #3bcbf7 0%, #00a4e4 100%);            border-radius: 18px;            display: flex;            align-items: center;            justify-content: center;            box-shadow: 0 8px 22px rgba(0, 164, 228, 0.45);            border: 1px solid rgba(255, 255, 255, 0.25);            z-index: 99999;            transition: transform 0.2s ease, box-shadow 0.2s ease;            text-decoration: none;            overflow: hidden;        }        .telegram-btn:hover {            transform: scale(1.08);            box-shadow: 0 12px 28px rgba(0, 164, 228, 0.65);        }        .telegram-btn:active {            transform: scale(0.95);        }        .telegram-btn svg {            width: 34px;            height: 34px;            fill: white;            margin-top: -3px;            margin-right: -2px;        }        .telegram-btn .ad-text {            position: absolute;            bottom: 5px;            left: 7px;            font-size: 12px;            font-weight: 800;            color: white;            letter-spacing: 0.5px;            line-height: 1;        }        /* 👑 نص الحقوق الجديد مرفوع إلى 22px 👑 */        .my-custom-watermark {            position: fixed !important;            bottom: 22px !important; /* الارتفاع الجديد */            left: 5px !important;            background-color: #000000 !important;            color: #ffffff !important;            font-size: 14px !important;            font-weight: 900 !important;            font-family: Arial, sans-serif !important;            padding: 4px 8px !important;            border-radius: 4px !important;            z-index: 2147483647 !important;            white-space: nowrap !important;            letter-spacing: 0.5px !important;        }        /* كارت التطبيق الرئيسي */        .app-card {            background: var(--card-bg);            backdrop-filter: blur(16px);            -webkit-backdrop-filter: blur(16px);            width: 100%;            max-width: 400px;            max-height: 95vh;            overflow-y: auto;            border-radius: 24px;            padding: 20px;            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),                         inset 0 1px 0 rgba(255, 255, 255, 0.1);            border: 1px solid var(--card-border);            animation: fadeIn 0.5s ease;        }        .app-card::-webkit-scrollbar {            display: none;        }        .header {            text-align: center;            margin-bottom: 20px;        }        .badge {            display: inline-block;            padding: 4px 12px;            background: rgba(99, 102, 241, 0.15);            color: #818cf8;            border-radius: 20px;            font-size: 11px;            font-weight: 700;            margin-bottom: 6px;            border: 1px solid rgba(129, 140, 248, 0.3);        }        .header h2 {            font-size: 20px;            font-weight: 800;            background: linear-gradient(to right, #ffffff, #cbd5e1);            -webkit-background-clip: text;            -webkit-text-fill-color: transparent;        }        .balance-box {            background: rgba(15, 23, 42, 0.6);            border: 1px solid rgba(255, 255, 255, 0.05);            padding: 15px;            border-radius: 18px;            text-align: center;            margin-bottom: 20px;            position: relative;        }        .balance-box label {            font-size: 12px;            color: var(--text-muted);            font-weight: 500;            display: block;            margin-bottom: 2px;        }        .balance-box .points {            font-size: 30px;            font-weight: 800;            color: #fbbf24;            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);            display: flex;            align-items: center;            justify-content: center;            gap: 6px;        }        .grid {            display: grid;            grid-template-columns: 1fr 1fr;            gap: 12px;            margin-bottom: 18px;        }        .btn {            background: rgba(255, 255, 255, 0.05);            border: 1px solid var(--card-border);            color: var(--text-main);            padding: 14px 10px;            border-radius: 16px;            font-size: 13px;            font-weight: 700;            cursor: pointer;            transition: transform 0.15s ease, background 0.2s ease;            display: flex;            flex-direction: column;            align-items: center;            gap: 6px;        }        .btn .icon {            font-size: 20px;        }        .btn:active {            transform: scale(0.95);        }        .btn-gift {            background: var(--gold-accent);            border: none;            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);        }        .btn-views {            background: var(--primary-accent);            border: none;            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);        }        .btn-code {            background: var(--blue-accent);            border: none;            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.25);        }        .btn-vip {            background: var(--green-accent);            border: none;            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);        }        .code-container {            background: rgba(15, 23, 42, 0.8);            padding: 6px;            border-radius: 12px;            border: 1px solid var(--card-border);            display: flex;            gap: 6px;            margin-bottom: 18px;        }        .code-container input {            flex: 1;            padding: 10px;            border-radius: 8px;            border: none;            background: transparent;            color: var(--text-main);            font-size: 13px;            font-weight: 700;            outline: none;            text-align: center;        }        .code-container button {            background: var(--primary-accent);            color: white;            border: none;            padding: 0 16px;            border-radius: 8px;            font-weight: 700;            cursor: pointer;        }        .alert-box {            background: rgba(15, 23, 42, 0.6);            border-right: 4px solid #818cf8;            padding: 12px 14px;            border-radius: 12px;            font-size: 12px;            font-weight: 500;            color: #e2e8f0;            display: flex;            align-items: center;            gap: 8px;        }        @keyframes fadeIn {            from { opacity: 0; transform: scale(0.98); }            to { opacity: 1; transform: scale(1); }        }        @keyframes pulse {            0% { transform: scale(1); }            50% { transform: scale(1.05); }            100% { transform: scale(1); }        }        .pulse-anim {            animation: pulse 0.3s ease-in-out;        }        /* ============ شاشة تسجيل الدخول ============ */        #loginScreen {            background: var(--card-bg);            backdrop-filter: blur(16px);            -webkit-backdrop-filter: blur(16px);            width: 100%;            max-width: 400px;            border-radius: 24px;            padding: 36px 26px 30px;            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),                        inset 0 1px 0 rgba(255, 255, 255, 0.1);            border: 1px solid var(--card-border);            animation: fadeIn 0.5s ease;            text-align: center;        }        .login-logo {            width: 68px;            height: 68px;            border-radius: 20px;            background: var(--primary-accent);            display: flex;            align-items: center;            justify-content: center;            font-size: 32px;            margin: 0 auto 18px;            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);        }        #loginScreen h2 {            font-size: 21px;            font-weight: 800;            background: linear-gradient(to right, #ffffff, #cbd5e1);            -webkit-background-clip: text;            -webkit-text-fill-color: transparent;            margin-bottom: 8px;        }        #loginScreen p.sub {            font-size: 13px;            color: var(--text-muted);            font-weight: 500;            margin-bottom: 28px;            line-height: 1.8;        }        .google-btn {            width: 100%;            display: flex;            align-items: center;            justify-content: center;            gap: 12px;            background: #ffffff;            color: #1f2937;            border: none;            border-radius: 14px;            padding: 14px 18px;            font-family: 'Tajawal', sans-serif;            font-size: 15px;            font-weight: 700;            cursor: pointer;            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);            transition: transform 0.15s ease, box-shadow 0.2s ease;        }        .google-btn:hover {            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);        }        .google-btn:active {            transform: scale(0.97);        }        .google-btn svg {            width: 20px;            height: 20px;            flex-shrink: 0;        }        .login-divider {            display: flex;            align-items: center;            gap: 10px;            margin: 22px 0 18px;            color: var(--text-muted);            font-size: 11px;        }        .login-divider::before,        .login-divider::after {            content: "";            flex: 1;            height: 1px;            background: var(--card-border);        }        .login-status {            font-size: 12px;            color: var(--text-muted);            min-height: 18px;            margin-top: 6px;        }        .login-status.error {            color: #ef4444;        }        .user-chip {            display: flex;            align-items: center;            gap: 10px;            background: rgba(15, 23, 42, 0.6);            border: 1px solid var(--card-border);            border-radius: 14px;            padding: 10px 12px;            margin-bottom: 16px;        }        .user-chip img {            width: 36px;            height: 36px;            border-radius: 50%;        }        .user-chip .info {            text-align: right;            flex: 1;        }        .user-chip .name {            font-size: 13px;            font-weight: 700;        }        .user-chip .email {            font-size: 11px;            color: var(--text-muted);        }        .logout-link {            font-size: 11px;            color: #818cf8;            cursor: pointer;            text-decoration: underline;            white-space: nowrap;        }        .hidden {            display: none !important;        }    </style></head><body><!-- زر قناة المطور (تيليجرام) --><a href="https://t.me/yet_another_developers_en" target="_blank" class="telegram-btn" title="قناة المطور">    <svg viewBox="0 0 24 24">        <path d="M9.78 18.65l.28-4.2 7.63-6.88c.34-.31-.08-.48-.53-.18l-9.44 5.94-4.08-1.28c-.89-.28-.9-.89.19-1.32L21.41 3.8c.82-.33 1.54.19 1.27 1.29L19.4 19.34c-.28 1.28-1.04 1.6-2.11 1.0l-5.32-3.92-2.57 2.47c-.28.28-.52.52-1.06.52z"/>    </svg>    <span class="ad-text">AD</span></a><!-- 👑 نص الحقوق الجديد 👑 --><div class="my-custom-watermark">made by AmmarJanj</div><!-- ============ شاشة تسجيل الدخول ============ --><div id="loginScreen">    <div class="login-logo">⚡</div>    <h2>متجر الخدمات الذكي</h2>    <p class="sub">سجّل الدخول بحسابك في Google عشان تحفظ نقاطك وتتابع طلباتك من أي جهاز</p>    <button class="google-btn" id="googleSignInBtn" onclick="handleGoogleSignIn()">        <svg viewBox="0 0 48 48">            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12                c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24                c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039                l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36                c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571                c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>        </svg>        <span id="googleBtnLabel">تسجيل الدخول عبر Google</span>    </button>    <div class="login-divider">أو</div>    <button class="btn btn-outline" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--text-muted); padding:12px; border-radius:14px; font-size:13px; font-weight:600; cursor:pointer;" onclick="continueAsGuest()">        الدخول كزائر (بدون حفظ التقدم)    </button>    <div class="login-status" id="loginStatus"></div></div><div class="app-card hidden" id="appCard">    <div class="header">        <span class="badge">شاشة ثابتة V2.5</span>        <h2>⚡ متجر الخدمات الذكي</h2>    </div>    <!-- بطاقة المستخدم المسجل دخوله -->    <div class="user-chip hidden" id="userChip">        <img id="userAvatar" src="" alt="">        <div class="info">            <div class="name" id="userName"></div>            <div class="email" id="userEmail"></div>        </div>        <span class="logout-link" onclick="signOutUser()">خروج</span>    </div>    <!-- صندوق الرصيد -->    <div class="balance-box">        <label>نقاطك المتاحة</label>        <div class="points" id="userPoints">            <span id="pointsValue">100</span>            <span style="font-size: 22px;">🪙</span>        </div>    </div>    <!-- شبكة الأزرار -->    <div class="grid">        <button class="btn btn-gift" onclick="getDailyGift()">            <span class="icon">🎁</span>            <span>الهدية اليومية</span>        </button>        <button class="btn btn-views" onclick="buyViews()">            <span class="icon">👁️</span>            <span>شراء مشاهدات</span>        </button>        <button class="btn btn-code" onclick="toggleCodeBox()">            <span class="icon">💳</span>            <span>إدخال كود</span>        </button>        <button class="btn btn-vip" onclick="checkVip()">            <span class="icon">👑</span>            <span>عضوية VIP</span>        </button>    </div>    <!-- حقل إدخال الكود -->    <div id="codeSection" style="display: none;">        <div class="code-container">            <input type="text" id="giftCodeInput" placeholder="أدخل الكود (جرب: FREE50)">            <button onclick="redeemCode()">تفعيل</button>        </div>    </div>    <!-- شريط الرسائل -->    <div class="alert-box" id="statusMessage">        <span>💡</span>        <span id="statusText">تم ضبط موضع النص على ارتفاع 22px!</span>    </div></div><!-- مكتبة Google Identity Services --><script src="https://accounts.google.com/gsi/client" async defer></script><script>    /* ====== إعدادات تسجيل الدخول بجوجل ======       1) روح لـ https://console.cloud.google.com       2) أنشئ مشروع -> فعّل "OAuth consent screen" -> أنشئ "OAuth Client ID" من نوع Web application       3) ضيف رابط موقعك (مثلاً https://username.github.io) ضمن Authorized JavaScript origins       4) حط الـ Client ID مكان النص أدناه    */    const GOOGLE_CLIENT_ID = "ضع_CLIENT_ID_تبعك_هنا.apps.googleusercontent.com";    let googleTokenClient = null;    let currentUser = null; // { name, email, picture }    function initGoogleAuth() {        if (typeof google === "undefined" || !google.accounts) {            // المكتبة لسا ما حملت، نحاول بعد شوي            setTimeout(initGoogleAuth, 300);            return;        }        googleTokenClient = google.accounts.oauth2.initTokenClient({            client_id: GOOGLE_CLIENT_ID,            scope: "openid email profile",            callback: onGoogleTokenReceived        });    }    function handleGoogleSignIn() {        const status = document.getElementById('loginStatus');        if (GOOGLE_CLIENT_ID.includes("ضع_CLIENT_ID")) {            status.textContent = "لازم أول تحط Google Client ID الخاص فيك بالكود عشان تسجيل الدخول يشتغل.";            status.classList.add('error');            return;        }        if (!googleTokenClient) {            status.textContent = "جاري تجهيز خدمة تسجيل الدخول، حاول بعد ثانية...";            return;        }        status.textContent = "";        status.classList.remove('error');        // يفتح نافذة اختيار الحساب من جوجل تلقائياً إذا فيه أكثر من حساب مسجل بالمتصفح        googleTokenClient.requestAccessToken({ prompt: "select_account" });    }    async function onGoogleTokenReceived(tokenResponse) {        const status = document.getElementById('loginStatus');        if (!tokenResponse || tokenResponse.error) {            status.textContent = "حصل خطأ أثناء تسجيل الدخول، حاول مرة ثانية.";            status.classList.add('error');            return;        }        try {            const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {                headers: { Authorization: `Bearer ${tokenResponse.access_token}` }            });            const profile = await res.json();            currentUser = {                name: profile.name || "مستخدم",                email: profile.email || "",                picture: profile.picture || ""            };            showApp();        } catch (e) {            status.textContent = "تعذر جلب بيانات الحساب. تحقق من الاتصال وحاول ثانية.";            status.classList.add('error');        }    }    function continueAsGuest() {        currentUser = null;        showApp();    }    function signOutUser() {        currentUser = null;        document.getElementById('appCard').classList.add('hidden');        document.getElementById('loginScreen').classList.remove('hidden');        document.getElementById('loginStatus').textContent = "";        points = 100;        hasTakenGift = false;        isVip = false;    }    function showApp() {        document.getElementById('loginScreen').classList.add('hidden');        document.getElementById('appCard').classList.remove('hidden');        const chip = document.getElementById('userChip');        if (currentUser) {            chip.classList.remove('hidden');            document.getElementById('userAvatar').src = currentUser.picture;            document.getElementById('userName').textContent = currentUser.name;            document.getElementById('userEmail').textContent = currentUser.email;        } else {            chip.classList.add('hidden');        }        updateUI();    }    initGoogleAuth();    let points = 100;    let hasTakenGift = false;    let isVip = false;    function updateUI() {        const pointsEl = document.getElementById('pointsValue');        const pointsBox = document.getElementById('userPoints');                pointsEl.innerText = points;                pointsBox.classList.remove('pulse-anim');        void pointsBox.offsetWidth;        pointsBox.classList.add('pulse-anim');    }    function showMessage(msg, type = 'info') {        const alertBox = document.getElementById('statusMessage');        const alertText = document.getElementById('statusText');                alertText.innerText = msg;                if (type === 'error') {            alertBox.style.borderRightColor = '#ef4444';            alertBox.style.background = 'rgba(239, 68, 68, 0.1)';        } else if (type === 'success') {            alertBox.style.borderRightColor = '#10b981';            alertBox.style.background = 'rgba(16, 185, 129, 0.1)';        } else {            alertBox.style.borderRightColor = '#818cf8';            alertBox.style.background = 'rgba(15, 23, 42, 0.6)';        }    }    function getDailyGift() {        if (hasTakenGift) {            showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");            return;        }        points += 20;        hasTakenGift = true;        updateUI();        showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");    }    function buyViews() {        if (points < 50) {            showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");            return;        }        points -= 50;        updateUI();        showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");    }    function toggleCodeBox() {        const box = document.getElementById('codeSection');        box.style.display = box.style.display === 'none' ? 'block' : 'none';    }    function redeemCode() {        const input = document.getElementById('giftCodeInput').value.trim();        if (input === "FREE50") {            points += 50;            updateUI();            showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");            document.getElementById('giftCodeInput').value = '';        } else if (input === "") {            showMessage("يرجى إدخال الكود أولاً في الخانة المخصصة.", "error");        } else {            showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");        }    }    function checkVip() {        if (isVip) {            showMessage("عضويتك الحالية: VIP نشطة ومُفعلة 👑", "success");        } else {            showMessage("مميزات VIP: خصم 50% على جميع الخدمات وزيادة سرعة التنفيذ.", "info");        }    }</script></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <!-- منع التكبير والتصغير وتثبيت حجم الشاشة -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>متجر الخدمات الإحترافي</title>
+    <!-- استدعاء خط Tajawal من Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: #000000;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --primary-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --green-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gold-accent: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --blue-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            background: #000000 !important;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* زر قناتك (تيليجرام) */
+        .telegram-btn {
+            position: fixed;
+            bottom: 65px;
+            left: 20px;
+            width: 62px;
+            height: 62px;
+            background: linear-gradient(135deg, #3bcbf7 0%, #00a4e4 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 22px rgba(0, 164, 228, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            z-index: 99999;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+        .telegram-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 28px rgba(0, 164, 228, 0.65);
+        }
+
+        .telegram-btn:active {
+            transform: scale(0.95);
+        }
+
+        .telegram-btn svg {
+            width: 34px;
+            height: 34px;
+            fill: white;
+            margin-top: -3px;
+            margin-right: -2px;
+        }
+
+        .telegram-btn .ad-text {
+            position: absolute;
+            bottom: 5px;
+            left: 7px;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        /* 👑 نص الحقوق الجديد مرفوع إلى 22px 👑 */
+        .my-custom-watermark {
+            position: fixed !important;
+            bottom: 22px !important; /* الارتفاع الجديد */
+            left: 5px !important;
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 900 !important;
+            font-family: Arial, sans-serif !important;
+            padding: 4px 8px !important;
+            border-radius: 4px !important;
+            z-index: 2147483647 !important;
+            white-space: nowrap !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        /* كارت التطبيق الرئيسي */
+        .app-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 400px;
+            max-height: 95vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .app-card::-webkit-scrollbar {
+            display: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            border: 1px solid rgba(129, 140, 248, 0.3);
+        }
+
+        .header h2 {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .balance-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .balance-box label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .balance-box .points {
+            font-size: 30px;
+            font-weight: 800;
+            color: #fbbf24;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 14px 10px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn .icon {
+            font-size: 20px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-gift {
+            background: var(--gold-accent);
+            border: none;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+        }
+
+        .btn-views {
+            background: var(--primary-accent);
+            border: none;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-code {
+            background: var(--blue-accent);
+            border: none;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.25);
+        }
+
+        .btn-vip {
+            background: var(--green-accent);
+            border: none;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .code-container {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .code-container input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 700;
+            outline: none;
+            text-align: center;
+        }
+
+        .code-container button {
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 0 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .alert-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-right: 4px solid #818cf8;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-anim {
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        /* ============ شاشة تسجيل الدخول ============ */
+        #loginScreen {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            padding: 36px 26px 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
+            animation: fadeIn 0.5s ease;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 68px;
+            height: 68px;
+            border-radius: 20px;
+            background: var(--primary-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 18px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        #loginScreen h2 {
+            font-size: 21px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        #loginScreen p.sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 28px;
+            line-height: 1.8;
+        }
+
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #ffffff;
+            color: #1f2937;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .google-btn:hover {
+            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
+        }
+
+        .google-btn:active {
+            transform: scale(0.97);
+        }
+
+        .google-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 22px 0 18px;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--card-border);
+        }
+
+        .login-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            min-height: 18px;
+            margin-top: 6px;
+        }
+
+        .login-status.error {
+            color: #ef4444;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+        }
+
+        .user-chip img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .user-chip .info {
+            text-align: right;
+            flex: 1;
+        }
+
+        .user-chip .name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .user-chip .email {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .logout-link {
+            font-size: 11px;
+            color: #818cf8;
+            cursor: pointer;
+            text-decoration: underline;
+            white-space: nowrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<!-- زر قناة المطور (تيليجرام) -->
+<a href="https://t.me/yet_another_developers_en" target="_blank" class="telegram-btn" title="قناة المطور">
+    <svg viewBox="0 0 24 24">
+        <path d="M9.78 18.65l.28-4.2 7.63-6.88c.34-.31-.08-.48-.53-.18l-9.44 5.94-4.08-1.28c-.89-.28-.9-.89.19-1.32L21.41 3.8c.82-.33 1.54.19 1.27 1.29L19.4 19.34c-.28 1.28-1.04 1.6-2.11 1.0l-5.32-3.92-2.57 2.47c-.28.28-.52.52-1.06.52z"/>
+    </svg>
+    <span class="ad-text">AD</span>
+</a>
+
+<!-- 👑 نص الحقوق الجديد 👑 -->
+<div class="my-custom-watermark">made by AmmarJanj</div>
+
+<!-- ============ شاشة تسجيل الدخول ============ -->
+<div id="loginScreen">
+    <div class="login-logo">⚡</div>
+    <h2>متجر الخدمات الذكي</h2>
+    <p class="sub">سجّل الدخول بحسابك في Google عشان تحفظ نقاطك وتتابع طلباتك من أي جهاز</p>
+
+    <button class="google-btn" id="googleSignInBtn" onclick="handleGoogleSignIn()">
+        <svg viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12
+                c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24
+                c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039
+                l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36
+                c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571
+                c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+        </svg>
+        <span id="googleBtnLabel">تسجيل الدخول عبر Google</span>
+    </button>
+
+    <div class="login-divider">أو</div>
+    <button class="btn btn-outline" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--text-muted); padding:12px; border-radius:14px; font-size:13px; font-weight:600; cursor:pointer;" onclick="continueAsGuest()">
+        الدخول كزائر (بدون حفظ التقدم)
+    </button>
+
+    <div class="login-status" id="loginStatus"></div>
+</div>
+
+<div class="app-card hidden" id="appCard">
+    <div class="header">
+        <span class="badge">شاشة ثابتة V2.5</span>
+        <h2>⚡ متجر الخدمات الذكي</h2>
+    </div>
+
+    <!-- بطاقة المستخدم المسجل دخوله -->
+    <div class="user-chip hidden" id="userChip">
+        <img id="userAvatar" src="" alt="">
+        <div class="info">
+            <div class="name" id="userName"></div>
+            <div class="email" id="userEmail"></div>
+        </div>
+        <span class="logout-link" onclick="signOutUser()">خروج</span>
+    </div>
+
+    <!-- صندوق الرصيد -->
+    <div class="balance-box">
+        <label>نقاطك المتاحة</label>
+        <div class="points" id="userPoints">
+            <span id="pointsValue">100</span>
+            <span style="font-size: 22px;">🪙</span>
+        </div>
+    </div>
+
+    <!-- شبكة الأزرار -->
+    <div class="grid">
+        <button class="btn btn-gift" onclick="getDailyGift()">
+            <span class="icon">🎁</span>
+            <span>الهدية اليومية</span>
+        </button>
+
+        <button class="btn btn-views" onclick="buyViews()">
+            <span class="icon">👁️</span>
+            <span>شراء مشاهدات</span>
+        </button>
+
+        <button class="btn btn-code" onclick="toggleCodeBox()">
+            <span class="icon">💳</span>
+            <span>إدخال كود</span>
+        </button>
+
+        <button class="btn btn-vip" onclick="checkVip()">
+            <span class="icon">👑</span>
+            <span>عضوية VIP</span>
+        </button>
+    </div>
+
+    <!-- حقل إدخال الكود -->
+    <div id="codeSection" style="display: none;">
+        <div class="code-container">
+            <input type="text" id="giftCodeInput" placeholder="أدخل الكود (جرب: FREE50)">
+            <button onclick="redeemCode()">تفعيل</button>
+        </div>
+    </div>
+
+    <!-- شريط الرسائل -->
+    <div class="alert-box" id="statusMessage">
+        <span>💡</span>
+        <span id="statusText">تم ضبط موضع النص على ارتفاع 22px!</span>
+    </div>
+</div>
+
+<!-- مكتبة Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+    /* ====== إعدادات تسجيل الدخول بجوجل ======
+       1) روح لـ https://console.cloud.google.com
+       2) أنشئ مشروع -> فعّل "OAuth consent screen" -> أنشئ "OAuth Client ID" من نوع Web application
+       3) ضيف رابط موقعك (مثلاً https://username.github.io) ضمن Authorized JavaScript origins
+       4) حط الـ Client ID مكان النص أدناه
+    */
+    const GOOGLE_CLIENT_ID = "818999508050-2ibidgsj8qcc4icfu3ckgsekmacc9k0m.apps.googleusercontent.com";
+
+    let googleTokenClient = null;
+    let currentUser = null; // { name, email, picture }
+
+    function initGoogleAuth() {
+        if (typeof google === "undefined" || !google.accounts) {
+            // المكتبة لسا ما حملت، نحاول بعد شوي
+            setTimeout(initGoogleAuth, 300);
+            return;
+        }
+        googleTokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: GOOGLE_CLIENT_ID,
+            scope: "openid email profile",
+            callback: onGoogleTokenReceived
+        });
+    }
+
+    function handleGoogleSignIn() {
+        const status = document.getElementById('loginStatus');
+        if (GOOGLE_CLIENT_ID.includes("ضع_CLIENT_ID")) {
+            status.textContent = "لازم أول تحط Google Client ID الخاص فيك بالكود عشان تسجيل الدخول يشتغل.";
+            status.classList.add('error');
+            return;
+        }
+        if (!googleTokenClient) {
+            status.textContent = "جاري تجهيز خدمة تسجيل الدخول، حاول بعد ثانية...";
+            return;
+        }
+        status.textContent = "";
+        status.classList.remove('error');
+        // يفتح نافذة اختيار الحساب من جوجل تلقائياً إذا فيه أكثر من حساب مسجل بالمتصفح
+        googleTokenClient.requestAccessToken({ prompt: "select_account" });
+    }
+
+    async function onGoogleTokenReceived(tokenResponse) {
+        const status = document.getElementById('loginStatus');
+        if (!tokenResponse || tokenResponse.error) {
+            status.textContent = "حصل خطأ أثناء تسجيل الدخول، حاول مرة ثانية.";
+            status.classList.add('error');
+            return;
+        }
+        try {
+            const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+            });
+            const profile = await res.json();
+            currentUser = {
+                name: profile.name || "مستخدم",
+                email: profile.email || "",
+                picture: profile.picture || ""
+            };
+            showApp();
+        } catch (e) {
+            status.textContent = "تعذر جلب بيانات الحساب. تحقق من الاتصال وحاول ثانية.";
+            status.classList.add('error');
+        }
+    }
+
+    function continueAsGuest() {
+        currentUser = null;
+        showApp();
+    }
+
+    function signOutUser() {
+        currentUser = null;
+        document.getElementById('appCard').classList.add('hidden');
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('loginStatus').textContent = "";
+        points = 100;
+        hasTakenGift = false;
+        isVip = false;
+    }
+
+    function showApp() {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('appCard').classList.remove('hidden');
+        const chip = document.getElementById('userChip');
+        if (currentUser) {
+            chip.classList.remove('hidden');
+            document.getElementById('userAvatar').src = currentUser.picture;
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userEmail').textContent = currentUser.email;
+        } else {
+            chip.classList.add('hidden');
+        }
+        updateUI();
+    }
+
+    initGoogleAuth();
+
+    let points = 100;
+    let hasTakenGift = false;
+    let isVip = false;
+
+    function updateUI() {
+        const pointsEl = document.getElementById('pointsValue');
+        const pointsBox = document.getElementById('userPoints');
+        
+        pointsEl.innerText = points;
+        
+        pointsBox.classList.remove('pulse-anim');
+        void pointsBox.offsetWidth;
+        pointsBox.classList.add('pulse-anim');
+    }
+
+    function showMessage(msg, type = 'info') {
+        const alertBox = document.getElementById('statusMessage');
+        const alertText = document.getElementById('statusText');
+        
+        alertText.innerText = msg;
+        
+        if (type === 'error') {
+            alertBox.style.borderRightColor = '#ef4444';
+            alertBox.style.background = 'rgba(239, 68, 68, 0.1)';
+        } else if (type === 'success') {
+            alertBox.style.borderRightColor = '#10b981';
+            alertBox.style.background = 'rgba(16, 185, 129, 0.1)';
+        } else {
+            alertBox.style.borderRightColor = '#818cf8';
+            alertBox.style.background = 'rgba(15, 23, 42, 0.6)';
+        }
+    }
+
+    function getDailyGift() {
+        if (hasTakenGift) {
+            showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
+            return;
+        }
+        points += 20;
+        hasTakenGift = true;
+        updateUI();
+        showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");
+    }
+
+    function buyViews() {
+        if (points < 50) {
+            showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
+            return;
+        }
+        points -= 50;
+        updateUI();
+        showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");
+    }
+
+    function toggleCodeBox() {
+        const box = document.getElementById('codeSection');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function redeemCode() {
+        const input = document.getElementById('giftCodeInput').value.trim();
+        if (input === "FREE50") {
+            points += 50;
+            updateUI();
+            showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
+            document.getElementById('giftCodeInput').value = '';
+        } else if (input === "") {
+            showMessage("يرجى إدخال الكود أولاً في الخانة المخصصة.", "error");
+        } else {
+            showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");
+        }
+    }
+
+    function checkVip() {
+        if (isVip) {
+            showMessage("عضويتك الحالية: VIP نشطة ومُفعلة 👑", "success");
+        } else {
+            showMessage("مميزات VIP: خصم 50% على جميع الخدمات وزيادة سرعة التنفيذ.", "info");
+        }
+    }
+</script>
+
+</body>
+</html>
