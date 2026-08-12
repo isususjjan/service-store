@@ -95,22 +95,7 @@
             line-height: 1;
         }
 
-        /* 👑 نص الحقوق الجديد مرفوع إلى 22px 👑 */
-        .my-custom-watermark {
-            position: fixed !important;
-            bottom: 22px !important; /* الارتفاع الجديد */
-            left: 5px !important;
-            background-color: #000000 !important;
-            color: #ffffff !important;
-            font-size: 14px !important;
-            font-weight: 900 !important;
-            font-family: Arial, sans-serif !important;
-            padding: 4px 8px !important;
-            border-radius: 4px !important;
-            z-index: 2147483647 !important;
-            white-space: nowrap !important;
-            letter-spacing: 0.5px !important;
-        }
+        /* 👑 (تم حذف الوترمارك) 👑 */
 
         /* كارت التطبيق الرئيسي */
         .app-card {
@@ -494,17 +479,6 @@
 </head>
 <body>
 
-<!-- زر قناة المطور (تيليجرام) -->
-<a href="https://t.me/yet_another_developers_en" target="_blank" class="telegram-btn" title="قناة المطور">
-    <svg viewBox="0 0 24 24">
-        <path d="M9.78 18.65l.28-4.2 7.63-6.88c.34-.31-.08-.48-.53-.18l-9.44 5.94-4.08-1.28c-.89-.28-.9-.89.19-1.32L21.41 3.8c.82-.33 1.54.19 1.27 1.29L19.4 19.34c-.28 1.28-1.04 1.6-2.11 1.0l-5.32-3.92-2.57 2.47c-.28.28-.52.52-1.06.52z"/>
-    </svg>
-    <span class="ad-text">AD</span>
-</a>
-
-<!-- 👑 نص الحقوق الجديد 👑 -->
-<div class="my-custom-watermark">made by AmmarJanj</div>
-
 <!-- ============ شاشة تسجيل الدخول ============ -->
 <div id="loginScreen">
     <div class="login-logo">⚡</div>
@@ -528,6 +502,14 @@
     <div class="login-status" id="loginStatus"></div>
 </div>
 
+<!-- زر قناة التيليجرام - يظهر بس بعد تسجيل الدخول -->
+<a href="https://t.me/yet_another_developers_en" target="_blank" class="telegram-btn hidden" id="telegramBtn" title="قناة المطور">
+    <svg viewBox="0 0 24 24">
+        <path d="M9.78 18.65l.28-4.2 7.63-6.88c.34-.31-.08-.48-.53-.18l-9.44 5.94-4.08-1.28c-.89-.28-.9-.89.19-1.32L21.41 3.8c.82-.33 1.54.19 1.27 1.29L19.4 19.34c-.28 1.28-1.04 1.6-2.11 1.0l-5.32-3.92-2.57 2.47c-.28.28-.52.52-1.06.52z"/>
+    </svg>
+    <span class="ad-text">AD</span>
+</a>
+
 <div class="app-card hidden" id="appCard">
     <div class="header">
         <span class="badge">شاشة ثابتة V2.5</span>
@@ -542,6 +524,7 @@
         </div>
         <span class="logout-link" onclick="signOutUser()">خروج</span>
     </div>
+
 
     <!-- صندوق الرصيد -->
     <div class="balance-box">
@@ -714,6 +697,7 @@
         if (currentUser) await db.auth.signOut();
         currentUser = null;
         document.getElementById('appCard').classList.add('hidden');
+        document.getElementById('telegramBtn').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('loginStatus').textContent = "";
         document.getElementById('authEmail').value = "";
@@ -726,6 +710,7 @@
     function showApp() {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('appCard').classList.remove('hidden');
+        document.getElementById('telegramBtn').classList.remove('hidden');
         const chip = document.getElementById('userChip');
         if (currentUser) {
             chip.classList.remove('hidden');
