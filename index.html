@@ -511,9 +511,39 @@
             line-height: 1.8;
             max-width: 280px;
         }
+
+        /* ============ شاشة تحميل أولية (تمنع فلاش شاشة الدخول) ============ */
+        #authLoadingScreen {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            z-index: 999998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #authLoadingScreen .spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-top-color: #8b5cf6;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+
+<!-- ============ شاشة تحميل أولية ============ -->
+<div id="authLoadingScreen">
+    <div class="spinner"></div>
+</div>
+
 
 <!-- ============ شاشة عدم توفر الإنترنت ============ -->
 <div id="offlineOverlay" class="hidden">
@@ -524,7 +554,7 @@
 
 
 <!-- ============ شاشة تسجيل الدخول ============ -->
-<div id="loginScreen">
+<div id="loginScreen" class="hidden">
     <div class="login-logo">
         <svg viewBox="0 0 48 48" width="34" height="34">
             <path fill="#25F4EE" d="M33.5 8.5c1.8 3.1 4.9 5.2 8.5 5.6v6.4c-3.2-.1-6.2-1.1-8.7-2.8v12.9c0 6.9-5.6 12.5-12.5 12.5S8.3 36.5 8.3 29.6c0-6.6 5.1-12 11.6-12.4v6.6c-3 .4-5.3 3-5.3 6.1 0 3.4 2.8 6.2 6.2 6.2s6.2-2.8 6.2-6.2V4.2h6.5v4.3z"/>
@@ -783,6 +813,7 @@
     }
 
     function showApp() {
+        document.getElementById('authLoadingScreen').classList.add('hidden');
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('appCard').classList.remove('hidden');
         document.getElementById('telegramBtn').classList.remove('hidden');
@@ -798,11 +829,18 @@
     }
 
     async function checkAuthOnLoad() {
-        const { data: { session } } = await db.auth.getSession();
-        if (session && session.user) {
-            await afterAuthSuccess(session.user);
+        try {
+            const { data: { session } } = await db.auth.getSession();
+            if (session && session.user) {
+                await afterAuthSuccess(session.user);
+                return;
+            }
+        } catch (e) {
+            // تجاهل، بنعرض شاشة الدخول العادية
         }
-        // غير كذا: تبقى شاشة الدخول ظاهرة (الوضع الافتراضي بالصفحة)
+        // ما فيه جلسة محفوظة: نخفي شاشة التحميل ونعرض شاشة الدخول
+        document.getElementById('authLoadingScreen').classList.add('hidden');
+        document.getElementById('loginScreen').classList.remove('hidden');
     }
 
     checkAuthOnLoad();
