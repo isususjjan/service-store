@@ -54,7 +54,7 @@
         /* زر قناتك (تيليجرام) */
         .telegram-btn {
             position: fixed;
-            bottom: 26px;
+            bottom: 8px;
             left: 20px;
             width: 62px;
             height: 62px;
@@ -312,13 +312,12 @@
             width: 68px;
             height: 68px;
             border-radius: 20px;
-            background: var(--primary-accent);
+            background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
             margin: 0 auto 18px;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
         #loginScreen h2 {
@@ -485,8 +484,14 @@
 
 <!-- ============ شاشة تسجيل الدخول ============ -->
 <div id="loginScreen">
-    <div class="login-logo">⚡</div>
-    <h2>متجر الخدمات الذكي</h2>
+    <div class="login-logo">
+        <svg viewBox="0 0 48 48" width="34" height="34">
+            <path fill="#25F4EE" d="M33.5 8.5c1.8 3.1 4.9 5.2 8.5 5.6v6.4c-3.2-.1-6.2-1.1-8.7-2.8v12.9c0 6.9-5.6 12.5-12.5 12.5S8.3 36.5 8.3 29.6c0-6.6 5.1-12 11.6-12.4v6.6c-3 .4-5.3 3-5.3 6.1 0 3.4 2.8 6.2 6.2 6.2s6.2-2.8 6.2-6.2V4.2h6.5v4.3z"/>
+            <path fill="#FE2C55" d="M31.7 6.7c1.8 3.1 4.9 5.2 8.5 5.6v6.4c-3.2-.1-6.2-1.1-8.7-2.8v12.9c0 6.9-5.6 12.5-12.5 12.5S6.5 34.7 6.5 27.8c0-6.6 5.1-12 11.6-12.4v6.6c-3 .4-5.3 3-5.3 6.1 0 3.4 2.8 6.2 6.2 6.2s6.2-2.8 6.2-6.2V2.4h6.5v4.3z"/>
+            <path fill="#ffffff" d="M32.6 7.6c1.8 3.1 4.9 5.2 8.5 5.6v6.4c-3.2-.1-6.2-1.1-8.7-2.8v12.9c0 6.9-5.6 12.5-12.5 12.5S7.4 35.6 7.4 28.7c0-6.6 5.1-12 11.6-12.4v6.6c-3 .4-5.3 3-5.3 6.1 0 3.4 2.8 6.2 6.2 6.2s6.2-2.8 6.2-6.2V3.3h6.5v4.3z"/>
+        </svg>
+    </div>
+    <h2>متجر ViewsTik</h2>
     <p class="sub">سجل الدخول أو قم بانشاء حساب جديد على هذا التطبيق</p>
 
     <div class="auth-tabs">
@@ -610,7 +615,7 @@
         status.textContent = '';
 
         if (!email || !password) {
-            status.textContent = "عبّي البريد الإلكتروني وكلمة المرور.";
+            status.textContent = "ادخل البريد الإلكتروني وكلمة المرور";
             status.classList.add('error');
             return;
         }
@@ -650,9 +655,9 @@
     }
 
     function translateAuthError(msg) {
-        if (msg.includes("Invalid login credentials")) return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+        if (msg.includes("Invalid login credentials")) return "البريد الإلكتروني أو كلمة المرور غير صحيحة";
         if (msg.includes("User already registered")) return "فيه حساب مسجل بهذا الإيميل من قبل، جرب تسجل دخول.";
-        if (msg.includes("Email not confirmed")) return "لازم تأكد إيميلك أول (شيك على بريدك الوارد).";
+        if (msg.includes("Email not confirmed")) return "تم ارسال رابط التحقق على بريدك الإلكتروني";
         return "حصل خطأ: " + msg;
     }
 
