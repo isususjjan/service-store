@@ -790,14 +790,6 @@
         showApp();
     }
 
-    async function persistCurrentUserData() {
-        if (!currentUser) return;
-        await db
-            .from('user_progress')
-            .update({ points, has_taken_gift: hasTakenGift, is_vip: isVip, updated_at: new Date().toISOString() })
-            .eq('id', currentUser.id);
-    }
-
     function continueAsGuest() {
         if (!requireInternet()) return;
         currentUser = null;
@@ -888,28 +880,73 @@
         }
     }
 
-    function getDailyGift() {
+    async function getDailyGift() {
         if (!requireInternet()) return;
+
+        // وضع الزائر: تجربة محلية بدون حفظ حقيقي (كان موجود من قبل)
+        if (!currentUser) {
+            if (hasTakenGift) {
+                showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
+                return;
+            }
+            points += 20;
+            hasTakenGift = true;
+            updateUI();
+            showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");
+            return;
+        }
+
         if (hasTakenGift) {
             showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
             return;
         }
-        points += 20;
+
+        const { data, error } = await db.rpc('claim_daily_gift');
+        if (error) {
+            if (error.message.includes('already_claimed')) {
+                hasTakenGift = true;
+                showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
+            } else {
+                showMessage("حصل خطأ، حاول مرة ثانية.", "error");
+            }
+            return;
+        }
+        points = data;
         hasTakenGift = true;
         updateUI();
-        persistCurrentUserData();
         showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");
     }
 
-    function buyViews() {
+    async function buyViews() {
         if (!requireInternet()) return;
+
+        if (!currentUser) {
+            if (points < 50) {
+                showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
+                return;
+            }
+            points -= 50;
+            updateUI();
+            showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");
+            return;
+        }
+
         if (points < 50) {
             showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
             return;
         }
-        points -= 50;
+
+        const { data, error } = await db.rpc('buy_views');
+        if (error) {
+            if (error.message.includes('insufficient_points')) {
+                showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
+            } else {
+                showMessage("حصل خطأ، حاول مرة ثانية.", "error");
+            }
+            return;
+        }
+        points = data;
         updateUI();
-        persistCurrentUserData();
         showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");
     }
 
@@ -919,20 +956,40 @@
         box.style.display = box.style.display === 'none' ? 'block' : 'none';
     }
 
-    function redeemCode() {
+    async function redeemCode() {
         if (!requireInternet()) return;
         const input = document.getElementById('giftCodeInput').value.trim();
-        if (input === "FREE50") {
-            points += 50;
-            updateUI();
-            persistCurrentUserData();
-            showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
-            document.getElementById('giftCodeInput').value = '';
-        } else if (input === "") {
+
+        if (input === "") {
             showMessage("يرجى إدخال الكود أولاً في الخانة المخصصة.", "error");
-        } else {
-            showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");
+            return;
         }
+
+        if (!currentUser) {
+            if (input === "FREE50") {
+                points += 50;
+                updateUI();
+                showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
+                document.getElementById('giftCodeInput').value = '';
+            } else {
+                showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");
+            }
+            return;
+        }
+
+        const { data, error } = await db.rpc('redeem_gift_code', { code_input: input });
+        if (error) {
+            if (error.message.includes('code_already_used')) {
+                showMessage("لقد استخدمت هذا الكود من قبل.", "error");
+            } else {
+                showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");
+            }
+            return;
+        }
+        points = data;
+        updateUI();
+        showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
+        document.getElementById('giftCodeInput').value = '';
     }
 
     function checkVip() {
