@@ -337,23 +337,6 @@
             line-height: 1.8;
         }
 
-        .login-divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 22px 0 18px;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        .login-divider::before,
-        .login-divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: var(--card-border);
-        }
-
         .login-status {
             font-size: 12px;
             color: var(--text-muted);
@@ -579,11 +562,6 @@
     <input type="password" class="auth-input" id="authPassword" placeholder="كلمة المرور" autocomplete="current-password">
     <button class="auth-submit-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">تسجيل الدخول</button>
 
-    <div class="login-divider">أو</div>
-    <button class="btn btn-outline" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--text-muted); padding:12px; border-radius:14px; font-size:13px; font-weight:600; cursor:pointer;" onclick="continueAsGuest()">
-        الدخول كزائر (بدون حفظ التقدم)
-    </button>
-
     <div class="login-status" id="loginStatus"></div>
 </div>
 
@@ -790,15 +768,6 @@
         showApp();
     }
 
-    function continueAsGuest() {
-        if (!requireInternet()) return;
-        currentUser = null;
-        points = 100;
-        hasTakenGift = false;
-        isVip = false;
-        showApp();
-    }
-
     async function signOutUser() {
         if (!requireInternet()) return;
         if (currentUser) await db.auth.signOut();
@@ -883,19 +852,6 @@
     async function getDailyGift() {
         if (!requireInternet()) return;
 
-        // وضع الزائر: تجربة محلية بدون حفظ حقيقي (كان موجود من قبل)
-        if (!currentUser) {
-            if (hasTakenGift) {
-                showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
-                return;
-            }
-            points += 20;
-            hasTakenGift = true;
-            updateUI();
-            showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");
-            return;
-        }
-
         if (hasTakenGift) {
             showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
             return;
@@ -919,17 +875,6 @@
 
     async function buyViews() {
         if (!requireInternet()) return;
-
-        if (!currentUser) {
-            if (points < 50) {
-                showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
-                return;
-            }
-            points -= 50;
-            updateUI();
-            showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");
-            return;
-        }
 
         if (points < 50) {
             showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
@@ -962,18 +907,6 @@
 
         if (input === "") {
             showMessage("يرجى إدخال الكود أولاً في الخانة المخصصة.", "error");
-            return;
-        }
-
-        if (!currentUser) {
-            if (input === "FREE50") {
-                points += 50;
-                updateUI();
-                showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
-                document.getElementById('giftCodeInput').value = '';
-            } else {
-                showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");
-            }
             return;
         }
 
