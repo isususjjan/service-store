@@ -756,15 +756,23 @@
         if (!profile) {
             const { data: created } = await db
                 .from('user_progress')
-                .insert({ id: user.id, email: user.email, points: 100, has_taken_gift: false, is_vip: false })
+                .insert({ id: user.id, email: user.email, points: 0, has_taken_gift: false, is_vip: false })
                 .select()
                 .single();
             profile = created;
         }
 
         points = profile.points;
-        hasTakenGift = profile.has_taken_gift;
         isVip = profile.is_vip;
+
+        // نحسب هل مرت 24 ساعة كاملة من آخر مرة أخذ فيها الهدية
+        if (profile.last_gift_claim) {
+            const elapsed = Date.now() - new Date(profile.last_gift_claim).getTime();
+            hasTakenGift = elapsed < 24 * 60 * 60 * 1000;
+        } else {
+            hasTakenGift = false;
+        }
+
         showApp();
     }
 
