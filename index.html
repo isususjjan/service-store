@@ -442,12 +442,16 @@
         .user-chip .info {
             text-align: right;
             flex: 1;
+            min-width: 0;
         }
 
         .user-chip .email {
             font-size: 12px;
             font-weight: 600;
             color: var(--text-main);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .logout-link {
