@@ -176,6 +176,29 @@
             gap: 6px;
         }
 
+        .buy-coins-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin: 12px auto 0;
+            background: var(--primary-accent);
+            border: none;
+            color: #ffffff;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+            transition: transform 0.1s ease;
+        }
+
+        .buy-coins-btn:active {
+            transform: scale(0.96);
+        }
+
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -643,8 +666,11 @@
         <div class="points" id="userPoints">
             <span id="pointsValue">100</span>
             <span style="font-size: 22px;">🪙</span>
-            <button id="buyCoinsBtn" onclick="openBuyCoinsScreen()" title="شراء عملات" style="width:26px; height:26px; border-radius:50%; border:none; background:linear-gradient(135deg, #fbbf24 0%, #c4b5fd 100%); color:#1f2937; font-size:16px; font-weight:900; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; vertical-align:middle; margin-right:6px; box-shadow:0 2px 8px rgba(251,191,36,0.4); padding:0; line-height:1;">+</button>
         </div>
+        <button id="buyCoinsBtn" onclick="openBuyCoinsScreen()" class="buy-coins-btn">
+            <span style="font-size:15px; line-height:1;">+</span>
+            <span>شراء عملات</span>
+        </button>
     </div>
 
     <!-- شبكة الأزرار -->
@@ -688,7 +714,7 @@
 <!-- ============ صفحة شراء العملات ============ -->
 <div class="app-card hidden" id="buyCoinsScreen">
     <div class="header">
-        <span class="badge" style="cursor:pointer;" onclick="closeBuyCoinsScreen()">‹ رجوع</span>
+        <span class="badge" style="cursor:pointer;" onclick="goBackInBuyCoins()">‹ رجوع</span>
         <h2>شراء العملات</h2>
     </div>
 
@@ -720,7 +746,7 @@
     <div id="paymentDetails" class="hidden">
         <div class="card" style="margin-top:6px;">
             <div style="text-align:center; margin-bottom:14px;">
-                <div style="font-size:13px; color:var(--text-muted);">الباقة المختارة</div>
+                <div style="font-size:13px; color:var(--text-muted);">الكمية المختارة</div>
                 <div style="font-size:22px; font-weight:800; margin-top:4px;" id="selectedPkgSummary"></div>
             </div>
 
@@ -1066,6 +1092,16 @@
         document.getElementById('appCard').classList.remove('hidden');
         document.getElementById('telegramBtn').classList.remove('hidden');
         selectedPackage = null;
+    }
+
+    function goBackInBuyCoins() {
+        // لو كنا بشاشة تفاصيل الدفع، الرجوع يودي لقائمة الباقات بدل الرئيسية
+        const paymentScreen = document.getElementById('paymentDetails');
+        if (!paymentScreen.classList.contains('hidden')) {
+            cancelPackageSelection();
+        } else {
+            closeBuyCoinsScreen();
+        }
     }
 
     function selectPackage(coins, price) {
