@@ -183,6 +183,45 @@
             margin-bottom: 18px;
         }
 
+        .coin-package {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .coin-package:active {
+            transform: scale(0.98);
+        }
+
+        .coin-package:hover {
+            border-color: #fbbf24;
+        }
+
+        .coin-package .pkg-coins {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .coin-package .pkg-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            background: var(--primary-accent);
+            padding: 6px 14px;
+            border-radius: 10px;
+        }
+
         .btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--card-border);
@@ -604,6 +643,7 @@
         <div class="points" id="userPoints">
             <span id="pointsValue">100</span>
             <span style="font-size: 22px;">🪙</span>
+            <button id="buyCoinsBtn" onclick="openBuyCoinsScreen()" title="شراء عملات" style="width:26px; height:26px; border-radius:50%; border:none; background:linear-gradient(135deg, #fbbf24 0%, #c4b5fd 100%); color:#1f2937; font-size:16px; font-weight:900; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; vertical-align:middle; margin-right:6px; box-shadow:0 2px 8px rgba(251,191,36,0.4); padding:0; line-height:1;">+</button>
         </div>
     </div>
 
@@ -642,6 +682,72 @@
     <div class="alert-box" id="statusMessage">
         <span>💡</span>
         <span id="statusText">اختر أي من يعجبك من الازرار لبدا الرحلة!</span>
+    </div>
+</div>
+
+<!-- ============ صفحة شراء العملات ============ -->
+<div class="app-card hidden" id="buyCoinsScreen">
+    <div class="header">
+        <span class="badge" style="cursor:pointer;" onclick="closeBuyCoinsScreen()">‹ رجوع</span>
+        <h2>شراء عملات</h2>
+    </div>
+
+    <!-- قائمة الباقات -->
+    <div id="packagesList">
+        <div class="coin-package" onclick="selectPackage(150, 650)">
+            <div class="pkg-coins">150 <span>🪙</span></div>
+            <div class="pkg-price">650 د.ع</div>
+        </div>
+        <div class="coin-package" onclick="selectPackage(300, 1000)">
+            <div class="pkg-coins">300 <span>🪙</span></div>
+            <div class="pkg-price">1,000 د.ع</div>
+        </div>
+        <div class="coin-package" onclick="selectPackage(1000, 4000)">
+            <div class="pkg-coins">1,000 <span>🪙</span></div>
+            <div class="pkg-price">4,000 د.ع</div>
+        </div>
+        <div class="coin-package" onclick="selectPackage(1500, 5500)">
+            <div class="pkg-coins">1,500 <span>🪙</span></div>
+            <div class="pkg-price">5,500 د.ع</div>
+        </div>
+        <div class="coin-package" onclick="selectPackage(3000, 10000)">
+            <div class="pkg-coins">3,000 <span>🪙</span></div>
+            <div class="pkg-price">10,000 د.ع</div>
+        </div>
+        <div class="coin-package" onclick="selectPackage(10000, 28000)">
+            <div class="pkg-coins">10,000 <span>🪙</span></div>
+            <div class="pkg-price">28,000 د.ع</div>
+        </div>
+    </div>
+
+    <!-- شاشة تفاصيل الدفع (تظهر بعد اختيار باقة) -->
+    <div id="paymentDetails" class="hidden">
+        <div class="card" style="margin-top:6px;">
+            <div style="text-align:center; margin-bottom:14px;">
+                <div style="font-size:13px; color:var(--text-muted);">الباقة المختارة</div>
+                <div style="font-size:22px; font-weight:800; margin-top:4px;" id="selectedPkgSummary"></div>
+            </div>
+
+            <div style="background:rgba(15,23,42,0.6); border:1px solid var(--card-border); border-radius:14px; padding:14px; margin-bottom:14px;">
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">حوّل المبلغ إلى رقم آسياسيل التالي:</div>
+                <div style="font-size:20px; font-weight:900; letter-spacing:1px; text-align:center; direction:ltr; color:#fbbf24;" id="asiacellNumber">07XXXXXXXXX</div>
+            </div>
+
+            <div style="font-size:12px; color:var(--text-muted); line-height:2; margin-bottom:16px;">
+                بعد إتمام التحويل، اضغط الزر تحت — راح توصلنا طلبك وتتم مراجعته وإضافة العملات لحسابك خلال وقت قصير.
+            </div>
+
+            <button class="auth-submit-btn" id="confirmPaymentBtn" onclick="submitCoinOrder()">لقد أرسلت المبلغ ✓</button>
+            <button class="btn btn-outline" style="width:100%; margin-top:10px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--text-muted); padding:12px; border-radius:14px; font-size:13px; font-weight:600; cursor:pointer;" onclick="cancelPackageSelection()">اختيار باقة ثانية</button>
+        </div>
+    </div>
+
+    <!-- رسالة تأكيد إرسال الطلب -->
+    <div id="orderSentMessage" class="hidden" style="text-align:center; padding:30px 10px;">
+        <div style="font-size:40px; margin-bottom:10px;">✅</div>
+        <div style="font-size:16px; font-weight:800; margin-bottom:6px;">تم إرسال طلبك بنجاح</div>
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.9;">بانتظار مراجعة عملية الدفع، بيتم إضافة العملات لحسابك خلال وقت قصير.</div>
+        <button class="auth-submit-btn" style="margin-top:20px;" onclick="closeBuyCoinsScreen()">رجوع للرئيسية</button>
     </div>
 </div>
 
@@ -944,6 +1050,65 @@
         } else {
             showMessage("مميزات VIP: خصم 50% على جميع الخدمات وزيادة سرعة التنفيذ.", "info");
         }
+    }
+
+    /* ====== نظام شراء العملات (تحويل يدوي + طلب معلّق يراجعه المطور) ====== */
+    let selectedPackage = null; // { coins, price }
+
+    function openBuyCoinsScreen() {
+        if (!requireInternet()) return;
+        document.getElementById('appCard').classList.add('hidden');
+        document.getElementById('buyCoinsScreen').classList.remove('hidden');
+        document.getElementById('packagesList').classList.remove('hidden');
+        document.getElementById('paymentDetails').classList.add('hidden');
+        document.getElementById('orderSentMessage').classList.add('hidden');
+    }
+
+    function closeBuyCoinsScreen() {
+        document.getElementById('buyCoinsScreen').classList.add('hidden');
+        document.getElementById('appCard').classList.remove('hidden');
+        selectedPackage = null;
+    }
+
+    function selectPackage(coins, price) {
+        selectedPackage = { coins, price };
+        document.getElementById('selectedPkgSummary').textContent = coins.toLocaleString('en-US') + ' عملة — ' + price.toLocaleString('en-US') + ' د.ع';
+        document.getElementById('packagesList').classList.add('hidden');
+        document.getElementById('paymentDetails').classList.remove('hidden');
+    }
+
+    function cancelPackageSelection() {
+        selectedPackage = null;
+        document.getElementById('paymentDetails').classList.add('hidden');
+        document.getElementById('packagesList').classList.remove('hidden');
+    }
+
+    async function submitCoinOrder() {
+        if (!requireInternet()) return;
+        if (!selectedPackage || !currentUser) return;
+
+        const btn = document.getElementById('confirmPaymentBtn');
+        btn.disabled = true;
+        btn.textContent = "جاري إرسال الطلب...";
+
+        const { error } = await db.from('coin_orders').insert({
+            user_id: currentUser.id,
+            email: currentUser.email,
+            coins: selectedPackage.coins,
+            price_iqd: selectedPackage.price
+        });
+
+        btn.disabled = false;
+        btn.textContent = "لقد أرسلت المبلغ ✓";
+
+        if (error) {
+            showMessage("حصل خطأ بإرسال الطلب، حاول مرة ثانية.", "error");
+            return;
+        }
+
+        document.getElementById('paymentDetails').classList.add('hidden');
+        document.getElementById('orderSentMessage').classList.remove('hidden');
+        selectedPackage = null;
     }
 </script>
 
