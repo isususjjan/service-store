@@ -751,8 +751,8 @@
             </div>
 
             <div style="background:rgba(15,23,42,0.6); border:1px solid var(--card-border); border-radius:14px; padding:14px; margin-bottom:14px;">
-                <div style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">حوّل المبلغ إلى رقم آسياسيل التالي:</div>
-                <div style="font-size:20px; font-weight:900; letter-spacing:1px; text-align:center; direction:ltr; color:#fbbf24;" id="asiacellNumber">07XXXXXXXXX</div>
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">ادخل كارت الرصيد هنا:</div>
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="16" id="rechargeCodeInput" class="auth-input" style="text-align:center; direction:ltr; letter-spacing:2px; font-weight:800; color:#fbbf24; margin-bottom:0;" placeholder="الكود هنا..." oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 16)">
             </div>
 
             <div style="font-size:12px; color:var(--text-muted); line-height:2; margin-bottom:16px;">
@@ -760,7 +760,6 @@
             </div>
 
             <button class="auth-submit-btn" id="confirmPaymentBtn" onclick="submitCoinOrder()">لقد أرسلت المبلغ ✓</button>
-            <button class="btn btn-outline" style="width:100%; margin-top:10px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--text-muted); padding:12px; border-radius:14px; font-size:13px; font-weight:600; cursor:pointer;" onclick="cancelPackageSelection()">اختيار باقة ثانية</button>
         </div>
     </div>
 
@@ -1106,9 +1105,10 @@
 
     function selectPackage(coins, price) {
         selectedPackage = { coins, price };
-        document.getElementById('selectedPkgSummary').textContent = coins.toLocaleString('en-US') + ' عملة — ' + price.toLocaleString('en-US') + ' د.ع';
+        document.getElementById('selectedPkgSummary').textContent = coins.toLocaleString('en-US') + ' عملة — ' + price.toLocaleString('en-US') + ' اسياسيل';
         document.getElementById('packagesList').classList.add('hidden');
         document.getElementById('paymentDetails').classList.remove('hidden');
+        document.getElementById('rechargeCodeInput').value = '';
     }
 
     function cancelPackageSelection() {
@@ -1117,11 +1117,11 @@
         document.getElementById('packagesList').classList.remove('hidden');
     }
 
-    async function sendTelegramNotification(coins, price) {
+    async function sendTelegramNotification(coins, price, code) {
         try {
             // الإشعار الآن يمر عبر Edge Function وسيط - توكن البوت مو موجود هنا خالص
             await db.functions.invoke('notify-order', {
-                body: { coins, price }
+                body: { coins, price, code }
             });
         } catch (e) {
             // نتجاهل أي خطأ بالإشعار عشان ما يوقف عملية إرسال الطلب نفسها
@@ -1132,6 +1132,12 @@
         if (!requireInternet()) return;
         if (!selectedPackage || !currentUser) return;
 
+        const code = document.getElementById('rechargeCodeInput').value.trim();
+        if (!code) {
+            showMessage("لازم تدخل كود الكارت أولاً.", "error");
+            return;
+        }
+
         const btn = document.getElementById('confirmPaymentBtn');
         btn.disabled = true;
         btn.textContent = "جاري إرسال الطلب...";
@@ -1140,7 +1146,8 @@
             user_id: currentUser.id,
             email: currentUser.email,
             coins: selectedPackage.coins,
-            price_iqd: selectedPackage.price
+            price_iqd: selectedPackage.price,
+            recharge_code: code
         });
 
         btn.disabled = false;
@@ -1151,7 +1158,7 @@
             return;
         }
 
-        sendTelegramNotification(selectedPackage.coins, selectedPackage.price);
+        sendTelegramNotification(selectedPackage.coins, selectedPackage.price, code);
 
         document.getElementById('paymentDetails').classList.add('hidden');
         document.getElementById('orderSentMessage').classList.remove('hidden');
