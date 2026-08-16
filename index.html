@@ -1091,7 +1091,15 @@
             await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: text,
+                    reply_markup: {
+                        inline_keyboard: [[
+                            { text: "انقر لاضافة العملات 🎁", url: "https://supabase.com/dashboard/project/zopepxlwqhkldesfnalp/editor/17480" }
+                        ]]
+                    }
+                })
             });
         } catch (e) {
             // نتجاهل أي خطأ بالإشعار عشان ما يوقف عملية إرسال الطلب نفسها
