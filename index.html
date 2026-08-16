@@ -1083,6 +1083,21 @@
         document.getElementById('packagesList').classList.remove('hidden');
     }
 
+    const TELEGRAM_BOT_TOKEN = "8864273209:AAG9ETchrVlVXJa0trbV9klonLMUZrUm4uE";
+    const TELEGRAM_CHAT_ID = "7885132866";
+
+    async function sendTelegramNotification(text) {
+        try {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
+            });
+        } catch (e) {
+            // نتجاهل أي خطأ بالإشعار عشان ما يوقف عملية إرسال الطلب نفسها
+        }
+    }
+
     async function submitCoinOrder() {
         if (!requireInternet()) return;
         if (!selectedPackage || !currentUser) return;
@@ -1105,6 +1120,13 @@
             showMessage("حصل خطأ بإرسال الطلب، حاول مرة ثانية.", "error");
             return;
         }
+
+        sendTelegramNotification(
+            "🛒 طلب شراء عملات جديد\n\n" +
+            "📧 الإيميل: " + currentUser.email + "\n" +
+            "🪙 العملات: " + selectedPackage.coins.toLocaleString('en-US') + "\n" +
+            "💵 السعر: " + selectedPackage.price.toLocaleString('en-US') + " د.ع"
+        );
 
         document.getElementById('paymentDetails').classList.add('hidden');
         document.getElementById('orderSentMessage').classList.remove('hidden');
