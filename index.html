@@ -589,9 +589,102 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* ============ نافذة تأكيد الخروج من التطبيق ============ */
+        #exitConfirmOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 9999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        #exitConfirmOverlay .exit-card {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 34px 22px 22px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .exit-close-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .exit-message {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+
+        .exit-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .exit-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+        }
+
+        .exit-confirm-btn {
+            background: var(--primary-accent);
+            color: #ffffff;
+        }
+
+        .exit-cancel-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border) !important;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
+
+<!-- ============ نافذة تأكيد الخروج من التطبيق ============ -->
+<div id="exitConfirmOverlay" class="hidden">
+    <div class="exit-card">
+        <button class="exit-close-btn" onclick="cancelExitApp()">✕</button>
+        <div class="exit-message">هل تريد فعلاً الخروج من التطبيق؟</div>
+        <div class="exit-actions">
+            <button class="exit-confirm-btn" onclick="confirmExitApp()">تأكيد</button>
+            <button class="exit-cancel-btn" onclick="cancelExitApp()">الغاء</button>
+        </div>
+    </div>
+</div>
+
 
 <!-- ============ شاشة تحميل أولية ============ -->
 <div id="authLoadingScreen">
@@ -954,6 +1047,27 @@
     }
 
     checkAuthOnLoad();
+
+    /* ====== اعتراض زر الرجوع الفيزيائي بالهاتف - نعرض تأكيد خروج بدل الخروج المباشر ====== */
+    let exitConfirmed = false;
+
+    history.pushState(null, "", location.href);
+    window.addEventListener("popstate", function () {
+        if (exitConfirmed) return; // نسمح بالخروج الفعلي
+        history.pushState(null, "", location.href); // نلغي الرجوع الفعلي ونبقى بمكاننا
+        document.getElementById('exitConfirmOverlay').classList.remove('hidden');
+    });
+
+    function confirmExitApp() {
+        exitConfirmed = true;
+        document.getElementById('exitConfirmOverlay').classList.add('hidden');
+        try { window.close(); } catch (e) {}
+        history.back();
+    }
+
+    function cancelExitApp() {
+        document.getElementById('exitConfirmOverlay').classList.add('hidden');
+    }
 
     let points = 100;
     let hasTakenGift = false;
