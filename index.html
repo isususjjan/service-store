@@ -714,7 +714,7 @@
 <!-- ============ صفحة شراء العملات ============ -->
 <div class="app-card hidden" id="buyCoinsScreen">
     <div class="header">
-        <span class="badge" style="cursor:pointer;" onclick="goBackInBuyCoins()">‹ رجوع</span>
+        <span class="badge" id="buyCoinsBackBadge" style="cursor:pointer;" onclick="goBackInBuyCoins()">‹ رجوع</span>
         <h2>شراء العملات</h2>
     </div>
 
@@ -756,10 +756,10 @@
             </div>
 
             <div style="font-size:12px; color:var(--text-muted); line-height:2; margin-bottom:16px;">
-                بعد إتمام التحويل، اضغط الزر تحت — راح توصلنا طلبك وتتم مراجعته وإضافة العملات لحسابك خلال وقت قصير.
+                بعد إرسال الرصيد انتظر 10 أو 15 دقيقة لكي نتحقق من الرصيد ونضيف العملات تلقائيا إلى حسابك
             </div>
 
-            <button class="auth-submit-btn" id="confirmPaymentBtn" onclick="submitCoinOrder()">لقد أرسلت المبلغ ✓</button>
+            <button class="auth-submit-btn" id="confirmPaymentBtn" onclick="submitCoinOrder()">ارسال الرصيد</button>
         </div>
     </div>
 
@@ -1084,6 +1084,7 @@
         document.getElementById('paymentDetails').classList.add('hidden');
         document.getElementById('orderSentMessage').classList.add('hidden');
         document.getElementById('telegramBtn').classList.add('hidden');
+        document.getElementById('buyCoinsBackBadge').classList.remove('hidden');
     }
 
     function closeBuyCoinsScreen() {
@@ -1115,6 +1116,7 @@
         selectedPackage = null;
         document.getElementById('paymentDetails').classList.add('hidden');
         document.getElementById('packagesList').classList.remove('hidden');
+        document.getElementById('buyCoinsBackBadge').classList.remove('hidden');
     }
 
     async function sendTelegramNotification(coins, price, code) {
@@ -1140,7 +1142,7 @@
 
         const btn = document.getElementById('confirmPaymentBtn');
         btn.disabled = true;
-        btn.textContent = "جاري إرسال الطلب...";
+        btn.textContent = "جاري إرسال الرصيد...";
 
         const { error } = await db.from('coin_orders').insert({
             user_id: currentUser.id,
@@ -1151,7 +1153,7 @@
         });
 
         btn.disabled = false;
-        btn.textContent = "لقد أرسلت المبلغ ✓";
+        btn.textContent = "ارسال الرصيد";
 
         if (error) {
             showMessage("حصل خطأ بإرسال الطلب، حاول مرة ثانية.", "error");
@@ -1162,6 +1164,7 @@
 
         document.getElementById('paymentDetails').classList.add('hidden');
         document.getElementById('orderSentMessage').classList.remove('hidden');
+        document.getElementById('buyCoinsBackBadge').classList.add('hidden');
         selectedPackage = null;
     }
 </script>
