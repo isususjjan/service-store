@@ -766,8 +766,8 @@
     <!-- رسالة تأكيد إرسال الطلب -->
     <div id="orderSentMessage" class="hidden" style="text-align:center; padding:30px 10px;">
         <div style="font-size:40px; margin-bottom:10px;">✅</div>
-        <div style="font-size:16px; font-weight:800; margin-bottom:6px;">تم إرسال طلبك بنجاح</div>
-        <div style="font-size:13px; color:var(--text-muted); line-height:1.9;">بانتظار مراجعة عملية الدفع، بيتم إضافة العملات لحسابك خلال وقت قصير.</div>
+        <div style="font-size:16px; font-weight:800; margin-bottom:6px;">تم ارسال رصيدك بنجاح</div>
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.9;">سيصلك اشعار بأنه اذا كانت طريقة الدفع صحيحة او خاطى</div>
         <button class="auth-submit-btn" style="margin-top:20px;" onclick="closeBuyCoinsScreen()">رجوع للرئيسية</button>
     </div>
 </div>
@@ -1136,7 +1136,6 @@
 
         const code = document.getElementById('rechargeCodeInput').value.trim();
         if (!code) {
-            showMessage("لازم تدخل كود الكارت أولاً.", "error");
             return;
         }
 
