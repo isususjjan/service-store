@@ -733,8 +733,8 @@
     <!-- حقل إدخال الكود -->
     <div id="codeSection" style="display: none;">
         <div class="code-container">
-            <input type="text" id="giftCodeInput" placeholder="أدخل الكود (جرب: FREE50)">
-            <button onclick="redeemCode()">تفعيل</button>
+            <input type="text" id="giftCodeInput" placeholder="ادخل الكود">
+            <button onclick="redeemCode()">استخدام</button>
         </div>
     </div>
 
@@ -1004,6 +1004,9 @@
         pointsBox.classList.add('pulse-anim');
     }
 
+    const DEFAULT_STATUS_MSG = "اختر أي من يعجبك من الازرار لبدا الرحلة!";
+    let statusMessageTimer = null;
+
     function showMessage(msg, type = 'info') {
         const alertBox = document.getElementById('statusMessage');
         const alertText = document.getElementById('statusText');
@@ -1020,13 +1023,23 @@
             alertBox.style.borderRightColor = '#818cf8';
             alertBox.style.background = 'rgba(15, 23, 42, 0.6)';
         }
+
+        // بعد 5 ثواني، ترجع الرسالة والشكل لوضعهم الافتراضي تلقائيًا
+        if (statusMessageTimer) clearTimeout(statusMessageTimer);
+        if (msg !== DEFAULT_STATUS_MSG) {
+            statusMessageTimer = setTimeout(function () {
+                alertText.innerText = DEFAULT_STATUS_MSG;
+                alertBox.style.borderRightColor = '#818cf8';
+                alertBox.style.background = 'rgba(15, 23, 42, 0.6)';
+            }, 5000);
+        }
     }
 
     async function getDailyGift() {
         if (!requireInternet()) return;
 
         if (hasTakenGift) {
-            showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
+            showMessage("لقد استلمت الهدية اليومية بالفعل", "error");
             return;
         }
 
@@ -1034,7 +1047,7 @@
         if (error) {
             if (error.message.includes('already_claimed')) {
                 hasTakenGift = true;
-                showMessage("لقد استلمت الهدية اليومية سابقاً! عد غداً.", "error");
+                showMessage("لقد استلمت الهدية اليومية بالفعل", "error");
             } else {
                 showMessage("حصل خطأ، حاول مرة ثانية.", "error");
             }
@@ -1043,7 +1056,7 @@
         points = data;
         hasTakenGift = true;
         updateUI();
-        showMessage("مبروك! تم إضافة +20 نقطة إلى حسابك بنجاح.", "success");
+        showMessage("لقد حصلت على 20 نقطة", "success");
     }
 
     async function buyViews() {
@@ -1079,22 +1092,22 @@
         const input = document.getElementById('giftCodeInput').value.trim();
 
         if (input === "") {
-            showMessage("يرجى إدخال الكود أولاً في الخانة المخصصة.", "error");
+            showMessage("ادخل الكود أولا", "error");
             return;
         }
 
         const { data, error } = await db.rpc('redeem_gift_code', { code_input: input });
         if (error) {
             if (error.message.includes('code_already_used')) {
-                showMessage("لقد استخدمت هذا الكود من قبل.", "error");
+                showMessage("لقد استخدمت هذا الكود بالفعل", "error");
             } else {
-                showMessage("هذا الكود غير صالح أو تم استخدامه سابقاً.", "error");
+                showMessage("الكود خطأ أو تم استخدامه كحد أقصى", "error");
             }
             return;
         }
         points = data;
         updateUI();
-        showMessage("ممتاز! تم تفعيل كود الهدية وإضافة 50 نقطة.", "success");
+        showMessage("تم استخدام الكود بنجاح +50 نقطة", "success");
         document.getElementById('giftCodeInput').value = '';
     }
 
