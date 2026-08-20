@@ -231,6 +231,23 @@
             margin-bottom: 18px;
         }
 
+        .views-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(239, 68, 68, 0.95);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            z-index: 999999;
+            max-width: 85%;
+            text-align: center;
+        }
+
         .coin-package {
             display: flex;
             align-items: center;
@@ -839,8 +856,8 @@
             <div class="pkg-coins">5K مشاهدة <span>👁️</span></div>
             <div class="pkg-price">10,000 🪙</div>
         </div>
-        <div class="coin-package" onclick="selectViewsPackage('10K', 50000)">
-            <div class="pkg-coins">10K مشاهدة <span>👁️</span></div>
+        <div class="coin-package" onclick="selectViewsPackage('25K', 50000)">
+            <div class="pkg-coins">25K مشاهدة <span>👁️</span></div>
             <div class="pkg-price">50,000 🪙</div>
         </div>
     </div>
@@ -862,6 +879,9 @@
 
             <button class="auth-submit-btn" id="confirmViewsOrderBtn" onclick="submitViewsOrder()">اطلب</button>
         </div>
+
+        <!-- إشعار مؤقت خاص بهذه الشاشة (مثلاً: رصيد غير كافٍ) -->
+        <div id="viewsToast" class="views-toast hidden"></div>
     </div>
 
     <!-- رسالة تأكيد إرسال الطلب -->
@@ -1309,6 +1329,18 @@
         document.getElementById('tiktokLinkInput').value = '';
     }
 
+    let viewsToastTimer = null;
+
+    function showViewsToast(msg) {
+        const toast = document.getElementById('viewsToast');
+        toast.textContent = msg;
+        toast.classList.remove('hidden');
+        if (viewsToastTimer) clearTimeout(viewsToastTimer);
+        viewsToastTimer = setTimeout(function () {
+            toast.classList.add('hidden');
+        }, 5000);
+    }
+
     async function submitViewsOrder() {
         if (!requireInternet()) return;
         if (!selectedViewsPackage || !currentUser) return;
@@ -1331,9 +1363,9 @@
 
         if (error) {
             if (error.message.includes('insufficient_points')) {
-                showMessage("رصيدك غير كافٍ لهذه الباقة.", "error");
+                showViewsToast("عملاتك غير كافيه لشراء المشاهدات");
             } else {
-                showMessage("حصل خطأ بإرسال الطلب، حاول مرة ثانية.", "error");
+                showViewsToast("حصل خطأ بإرسال الطلب، حاول مرة ثانية.");
             }
             return;
         }
