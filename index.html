@@ -714,7 +714,7 @@
             <span>الهدية اليومية</span>
         </button>
 
-        <button class="btn btn-views" onclick="buyViews()">
+        <button class="btn btn-views" onclick="openBuyViewsScreen()">
             <span class="icon">👁️</span>
             <span>شراء مشاهدات</span>
         </button>
@@ -803,6 +803,73 @@
         <div style="font-size:16px; font-weight:800; margin-bottom:6px;">تم ارسال رصيدك بنجاح</div>
         <div style="font-size:13px; color:var(--text-muted); line-height:1.9;">سيصلك اشعار بأنه اذا كانت طريقة الدفع صحيحة او خاطى</div>
         <button class="auth-submit-btn" style="margin-top:20px;" onclick="closeBuyCoinsScreen()">رجوع للرئيسية</button>
+    </div>
+</div>
+
+<!-- ============ صفحة شراء المشاهدات ============ -->
+<div class="app-card hidden" id="buyViewsScreen">
+    <div class="header">
+        <span class="badge" id="buyViewsBackBadge" style="cursor:pointer;" onclick="goBackInBuyViews()">‹ رجوع</span>
+        <h2>شراء مشاهدات</h2>
+    </div>
+
+    <!-- قائمة باقات المشاهدات -->
+    <div id="viewsPackagesList">
+        <div class="coin-package" onclick="selectViewsPackage(50, 100)">
+            <div class="pkg-coins">50 مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">100 🪙</div>
+        </div>
+        <div class="coin-package" onclick="selectViewsPackage(100, 200)">
+            <div class="pkg-coins">100 مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">200 🪙</div>
+        </div>
+        <div class="coin-package" onclick="selectViewsPackage(300, 600)">
+            <div class="pkg-coins">300 مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">600 🪙</div>
+        </div>
+        <div class="coin-package" onclick="selectViewsPackage(500, 1000)">
+            <div class="pkg-coins">500 مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">1,000 🪙</div>
+        </div>
+        <div class="coin-package" onclick="selectViewsPackage('1K', 2000)">
+            <div class="pkg-coins">1K مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">2,000 🪙</div>
+        </div>
+        <div class="coin-package" onclick="selectViewsPackage('5K', 10000)">
+            <div class="pkg-coins">5K مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">10,000 🪙</div>
+        </div>
+        <div class="coin-package" onclick="selectViewsPackage('10K', 50000)">
+            <div class="pkg-coins">10K مشاهدة <span>👁️</span></div>
+            <div class="pkg-price">50,000 🪙</div>
+        </div>
+    </div>
+
+    <!-- شاشة تفاصيل الطلب (تظهر بعد اختيار باقة) -->
+    <div id="viewsOrderDetails" class="hidden">
+        <div class="card" style="margin-top:6px;">
+            <div style="text-align:center; margin-bottom:14px;">
+                <div style="font-size:13px; color:var(--text-muted);">الكمية المختارة</div>
+                <div style="font-size:20px; font-weight:800; margin-top:4px;" id="selectedViewsPkgSummary"></div>
+            </div>
+
+            <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:6px; font-weight:600;">ادخل رابط فيديوهك على التيك توك:</label>
+            <input type="text" id="tiktokLinkInput" class="auth-input" placeholder="الرابط...">
+
+            <div style="font-size:12px; color:var(--text-muted); line-height:2; margin:6px 0 16px;">
+                بعد إرسال الطلب انتظر 10 أو 15 دقيقة لكي تتم إضافة طلبك إلى قائمة المهام
+            </div>
+
+            <button class="auth-submit-btn" id="confirmViewsOrderBtn" onclick="submitViewsOrder()">اطلب</button>
+        </div>
+    </div>
+
+    <!-- رسالة تأكيد إرسال الطلب -->
+    <div id="viewsOrderSentMessage" class="hidden" style="text-align:center; padding:30px 10px;">
+        <div style="font-size:40px; margin-bottom:10px;">✅</div>
+        <div style="font-size:16px; font-weight:800; margin-bottom:6px;">تم ارسال طلبك بنجاح</div>
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.9;">سيصلك اشعار بأنه اذا ما تم إضافة رابطك إلى قائمة المهام أو لا</div>
+        <button class="auth-submit-btn" style="margin-top:20px;" onclick="closeBuyViewsScreen()">رجوع للرئيسية</button>
     </div>
 </div>
 
@@ -1059,27 +1126,6 @@
         showMessage("لقد حصلت على 20 نقطة", "success");
     }
 
-    async function buyViews() {
-        if (!requireInternet()) return;
-
-        if (points < 50) {
-            showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
-            return;
-        }
-
-        const { data, error } = await db.rpc('buy_views');
-        if (error) {
-            if (error.message.includes('insufficient_points')) {
-                showMessage("رصيدك غير كافٍ! تحتاج إلى 50 نقطة لشراء المشاهدات.", "error");
-            } else {
-                showMessage("حصل خطأ، حاول مرة ثانية.", "error");
-            }
-            return;
-        }
-        points = data;
-        updateUI();
-        showMessage("تم الخصم بنجاح! سيتم إرسال 1,000 مشاهدة فوراً.", "success");
-    }
 
     function toggleCodeBox() {
         if (!requireInternet()) return;
@@ -1214,6 +1260,91 @@
         document.getElementById('orderSentMessage').classList.remove('hidden');
         document.getElementById('buyCoinsBackBadge').classList.add('hidden');
         selectedPackage = null;
+    }
+
+    /* ====== نظام شراء المشاهدات بالعملات ====== */
+    let selectedViewsPackage = null; // { views, cost }
+
+    function openBuyViewsScreen() {
+        if (!requireInternet()) return;
+        document.getElementById('appCard').classList.add('hidden');
+        document.getElementById('buyViewsScreen').classList.remove('hidden');
+        document.getElementById('viewsPackagesList').classList.remove('hidden');
+        document.getElementById('viewsOrderDetails').classList.add('hidden');
+        document.getElementById('viewsOrderSentMessage').classList.add('hidden');
+        document.getElementById('telegramBtn').classList.add('hidden');
+        document.getElementById('supportBtn').classList.add('hidden');
+        document.getElementById('buyViewsBackBadge').classList.remove('hidden');
+    }
+
+    function closeBuyViewsScreen() {
+        document.getElementById('buyViewsScreen').classList.add('hidden');
+        document.getElementById('appCard').classList.remove('hidden');
+        document.getElementById('telegramBtn').classList.remove('hidden');
+        document.getElementById('supportBtn').classList.remove('hidden');
+        selectedViewsPackage = null;
+    }
+
+    function cancelViewsPackageSelection() {
+        selectedViewsPackage = null;
+        document.getElementById('viewsOrderDetails').classList.add('hidden');
+        document.getElementById('viewsPackagesList').classList.remove('hidden');
+        document.getElementById('buyViewsBackBadge').classList.remove('hidden');
+    }
+
+    function goBackInBuyViews() {
+        const orderScreen = document.getElementById('viewsOrderDetails');
+        if (!orderScreen.classList.contains('hidden')) {
+            cancelViewsPackageSelection();
+        } else {
+            closeBuyViewsScreen();
+        }
+    }
+
+    function selectViewsPackage(views, cost) {
+        selectedViewsPackage = { views, cost };
+        document.getElementById('selectedViewsPkgSummary').textContent = views + ' مشاهدة 👁️ — ' + cost.toLocaleString('en-US') + ' عملة 🪙';
+        document.getElementById('viewsPackagesList').classList.add('hidden');
+        document.getElementById('viewsOrderDetails').classList.remove('hidden');
+        document.getElementById('tiktokLinkInput').value = '';
+    }
+
+    async function submitViewsOrder() {
+        if (!requireInternet()) return;
+        if (!selectedViewsPackage || !currentUser) return;
+
+        const link = document.getElementById('tiktokLinkInput').value.trim();
+        if (!link) return;
+
+        const btn = document.getElementById('confirmViewsOrderBtn');
+        btn.disabled = true;
+        btn.textContent = "جاري الطلب...";
+
+        const { data, error } = await db.rpc('purchase_views', {
+            views_count_text: String(selectedViewsPackage.views),
+            coins_cost: selectedViewsPackage.cost,
+            video_link: link
+        });
+
+        btn.disabled = false;
+        btn.textContent = "اطلب";
+
+        if (error) {
+            if (error.message.includes('insufficient_points')) {
+                showMessage("رصيدك غير كافٍ لهذه الباقة.", "error");
+            } else {
+                showMessage("حصل خطأ بإرسال الطلب، حاول مرة ثانية.", "error");
+            }
+            return;
+        }
+
+        points = data;
+        updateUI();
+
+        document.getElementById('viewsOrderDetails').classList.add('hidden');
+        document.getElementById('viewsOrderSentMessage').classList.remove('hidden');
+        document.getElementById('buyViewsBackBadge').classList.add('hidden');
+        selectedViewsPackage = null;
     }
 </script>
 
