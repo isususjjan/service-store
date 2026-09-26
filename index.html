@@ -1417,10 +1417,22 @@
         points = data;
         updateUI();
 
+        sendViewsOrderNotification(selectedViewsPackage.views, selectedViewsPackage.cost, link);
+
         document.getElementById('viewsOrderDetails').classList.add('hidden');
         document.getElementById('viewsOrderSentMessage').classList.remove('hidden');
         document.getElementById('buyViewsBackBadge').classList.add('hidden');
         selectedViewsPackage = null;
+    }
+
+    async function sendViewsOrderNotification(views, cost, link) {
+        try {
+            await db.functions.invoke('notify-views-order', {
+                body: { views, cost, link }
+            });
+        } catch (e) {
+            // نتجاهل أي خطأ بالإشعار عشان ما يوقف عملية الطلب نفسها
+        }
     }
 </script>
 
